@@ -7,7 +7,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`).
 
 Running example: **MealPlan AI** — a family meal-planning app that turns pantry + dietary constraints into a weekly plan and grocery list.
 
-**End-to-end projects (artifacts on every arrow):** see [`use-cases/README.md`](use-cases/README.md). Six files — three greenfield, two brownfield, one party-mode deep dive.
+**End-to-end projects (`<< in` / `>> out` on every arrow):** see [`use-cases/README.md`](use-cases/README.md). Six files — three greenfield, two brownfield, one party-mode deep dive.
 
 | # | Project | Field |
 |---|---|---|
@@ -20,49 +20,143 @@ Running example: **MealPlan AI** — a family meal-planning app that turns pantr
 
 ---
 
-## 0a. What each current skill writes
+## 0a. What each current skill reads and writes
 
-Right-hand notes in the sequences below are **artifacts**, not extra steps.
+Sequence notation:
+
+```
+You -----> skill-name
+              << in:  what it consumes (your words, prior artifacts, the repo)
+              >> out: what it produces
+```
+
+`<< in` can be a spoken intent, a file, a folder, a diff, or the live codebase. Agents (`bmad-agent-*`) consume a persona request and dispatch; they do not write artifacts of their own.
 
 ```
 CORE
-  bmad-help                    (none — next-skill recommendation)
-  bmad-brainstorming           {output}/brainstorming/brainstorm.html
-                               optional brainstorm-intent.md
-  bmad-forge-idea              {output}/forge/forge-report.html
-                               optional forged-idea.md
-  bmad-deep-recon              {planning}/research/*.md  (+ optional HTML briefing)
-  bmad-advanced-elicitation    in-place edits to the draft just produced
-  bmad-review                  findings.json + findings.md
-  bmad-party-mode              {output}/party-mode/{date}-*.html     (keepsake, on wrap)
-                               {output}/party-mode/memories/<party>/.memlog.md
-                               optional _bmad/custom/bmad-party-mode*.toml
-  bmad-customize               _bmad/custom/<skill>.toml  or  <skill>.user.toml
+  bmad-help
+      << in:  your question + whatever planning/impl artifacts already exist
+      >> out: (none — next-skill recommendation)
+
+  bmad-brainstorming
+      << in:  a topic, stuck question, or "help me ideate"
+      >> out: {output}/brainstorming/brainstorm.html
+              optional brainstorm-intent.md
+
+  bmad-forge-idea
+      << in:  an idea (sentence or short brief) to harden or kill
+      >> out: {output}/forge/forge-report.html
+              optional forged-idea.md
+
+  bmad-deep-recon
+      << in:  subject + type (market|domain|technical|competitive|
+              user-voice|academic-lit|select)
+              OR a finished research report to process
+              OR a candidate set for choose-between
+      >> out: {planning}/research/*.md  (+ optional HTML briefing)
+
+  bmad-advanced-elicitation
+      << in:  the just-produced draft + a method (pre-mortem, red team, …)
+      >> out: in-place edits to that draft
+
+  bmad-review
+      << in:  path to a diff, branch, PRD, spec, story, arch, or prose
+              + optional lens names
+      >> out: findings.json + findings.md
+
+  bmad-party-mode
+      << in:  a topic; optional --party --mode
+              optional interview notes / cast idea (authoring)
+              existing memories/<party>/.memlog.md if memory is on
+      >> out: {output}/party-mode/{date}-*.html     (keepsake, on wrap)
+              {output}/party-mode/memories/<party>/.memlog.md
+              optional _bmad/custom/bmad-party-mode*.toml
+
+  bmad-customize
+      << in:  which skill + the behavior/template/menu/facts to persist
+      >> out: _bmad/custom/<skill>.toml  or  <skill>.user.toml
 
 AGENTS
-  bmad-agent-*                 none of their own — they dispatch workflows
+  bmad-agent-*
+      << in:  "talk to Mary/John/…" or a menu code (PRD, BD, CU, …)
+      >> out: (none — dispatches a workflow skill)
 
 PLAN
-  bmad-product-brief           brief.md + addendum.md
-  bmad-prfaq                   prfaq-*.md
-  bmad-prd                     create/update: prd.md, addendum.md, .memlog.md
-                               validate: HTML + .md findings
-  bmad-ux                      DESIGN.md, EXPERIENCE.md, .memlog.md
-  bmad-spec                    specs/spec-{slug}/SPEC.md + companions
-                               optional stories.yaml
-  bmad-architecture            ARCHITECTURE-SPINE.md
-  bmad-create-epics-and-stories  planning/epics/*.md + story files
-  bmad-sprint-planning         PASS|CONCERNS|FAIL + sprint-status.yaml
-  bmad-project-context         AGENTS.md managed block
+  bmad-product-brief
+      << in:  a relatively clear concept; optional recon / forged-idea
+      >> out: brief.md + addendum.md
+
+  bmad-prfaq
+      << in:  a product concept to stress-test; optional recon / forge
+      >> out: prfaq-*.md
+
+  bmad-prd
+      << in:  create:   brief and/or PRFAQ and/or brain dump + recon
+              update:   existing prd.md + a change signal
+              validate: finished prd.md + checklist
+      >> out: create/update: prd.md, addendum.md, .memlog.md
+              validate: HTML + .md findings
+
+  bmad-ux
+      << in:  PRD or spec (UI is a primary surface); optional brand notes
+      >> out: DESIGN.md, EXPERIENCE.md, .memlog.md
+
+  bmad-spec
+      << in:  any intent: brief, PRD, transcript, brain dump,
+              design folder, mixed sources (condense if huge)
+              update: existing SPEC.md + the change
+      >> out: specs/spec-{slug}/SPEC.md + companions
+              optional stories.yaml
+
+  bmad-architecture
+      << in:  PRD or spec; UX if present
+              brownfield: the existing codebase
+      >> out: ARCHITECTURE-SPINE.md
+
+  bmad-create-epics-and-stories
+      << in:  architecture + PRD/spec
+      >> out: planning/epics/*.md + story files
+
+  bmad-sprint-planning
+      << in:  epics/stories (create/gate)
+              existing sprint-status.yaml (status / repair)
+      >> out: PASS|CONCERNS|FAIL + sprint-status.yaml
+
+  bmad-project-context
+      << in:  setup/refresh: the repo (scripts, package manager, CI)
+              record: an observed agent mistake
+              audit: current AGENTS.md block
+      >> out: AGENTS.md managed block
 
 SHIP
-  bmad-build                   code + per-story implementation record
-  bmad-build-auto              same + terminal status for an orchestrator
-  bmad-code-review             findings + optional applied patches
-  bmad-checkpoint-preview      walkthrough (usually conversation-only)
-  bmad-qa-generate-e2e-tests   API / E2E test suite
-  bmad-correct-course          change proposal (then may rewrite PRD/arch/epics/sprint)
-  bmad-retrospective           retro doc + action items + acceptance verdict
+  bmad-build
+      << in:  a sentence, issue, SPEC.md, or one story from stories.yaml
+              + the codebase (+ AGENTS.md if present)
+      >> out: code + per-story implementation record
+
+  bmad-build-auto
+      << in:  one already-bounded unit (story) + spec + codebase
+      >> out: code + impl record + terminal status
+
+  bmad-code-review
+      << in:  a code change (diff / branch / PR)
+      >> out: findings + optional applied patches
+
+  bmad-checkpoint-preview
+      << in:  a commit, branch, or PR
+      >> out: guided walkthrough (usually conversation-only)
+
+  bmad-qa-generate-e2e-tests
+      << in:  implemented feature/code (+ SPEC success conditions)
+      >> out: API / E2E test suite
+
+  bmad-correct-course
+      << in:  the change signal + current PRD / arch / epics / sprint-status
+      >> out: change proposal (then may rewrite those same artifacts)
+
+  bmad-retrospective
+      << in:  completed epic: spec folder, stories.yaml, impl records, code
+      >> out: retro doc + action items + acceptance verdict
 ```
 
 ---
@@ -249,22 +343,25 @@ You              Help?     Context?      Build           Review          Checkpo
  |   keep getting lost?]      |           |               |                 |
  |-- optional --------------->|           |               |                 |
  |                     bmad-project-      |               |                 |
- |                     context            |  >> AGENTS.md managed block     |
+ |                     context            |  << in:  the repo (scripts, pkg manager)
+ |                                        |  >> out: AGENTS.md managed block
  |                            |           |               |                 |
  |-- "build this" ----------------------->|               |                 |
  |                                 bmad-build             |                 |
- |                                 clarify→plan→          |  >> code
- |                                 implement→review       |  >> spec/.../impl/<story> record
+ |                                 << in:  "add servings multiplier" + codebase
+ |                                 >> out: code + spec/.../impl/<story> record
  |                            |           |               |                 |
  |  [want a second pass?]     |           |               |                 |
  |-- optional ----------------------------|-------------->|                 |
  |                                                 bmad-code-review         |
- |                                                            >> findings + optional patches
+ |                                              << in:  the change (diff/PR)
+ |                                              >> out: findings + optional patches
  |                            |           |               |                 |
  |  [I want to walk the PR]   |           |               |                 |
  |-- optional ---------------------------------------------------------->   |
  |                                                            bmad-checkpoint-preview
- |                                                            >> walkthrough (usually no file)
+ |                                              << in:  the commit / branch / PR
+ |                                              >> out: walkthrough (usually no file)
  |                            |           |               |                 |
  v                            v           v               v                 v
 ```
@@ -283,36 +380,42 @@ You    Forge/Brain   Recon     Spec      Build×N     QA      Retro
  |          |          |         |          |         |        |
  |-- idea fuzzy? ----->|         |          |         |        |
  |     bmad-brainstorming        |          |         |        |
- |       >> brainstorm.html + optional brainstorm-intent.md    |
+ |       << in:  "pantry to weekly plan" (fuzzy)
+ |       >> out: brainstorm.html + optional brainstorm-intent.md
  |     and/or bmad-forge-idea    |          |         |        |
- |       >> forge-report.html + optional forged-idea.md        |
+ |       << in:  the chosen direction
+ |       >> out: forge-report.html + optional forged-idea.md
  |          |          |         |          |         |        |
  |-- need evidence? ----------->|         |          |         |        |
  |                    bmad-deep-recon     |          |         |        |
- |                      >> research/*.md (+ optional HTML)     |
+ |                      << in:  subject + type (or a report to process)
+ |                      >> out: research/*.md (+ optional HTML)
  |          |          |         |          |         |        |
  |-- intent is now defined -------------->|          |         |        |
  |                              bmad-spec            |         |        |
- |                              >> SPEC.md + companions        |
- |                              >> optional stories.yaml       |
+ |                              << in:  forged-idea + recon (condensed)
+ |                              >> out: SPEC.md + companions + stories.yaml
  |          |          |         |          |         |        |
  |-- each story ----------------------------|------->|         |        |
  |                                   bmad-build      |         |        |
- |                                   >> code + impl record     |
+ |                                   << in:  one story + SPEC.md + codebase
+ |                                   >> out: code + impl record
  |          |          |         |          |         |        |
  |  [patterns stable? unattended later stories]      |         |        |
  |-- optional -----------------------------|-------> |         |        |
  |                                   bmad-build-auto |         |        |
- |                                   >> code + impl + terminal status
+ |                                   << in:  one bounded story + spec + code
+ |                                   >> out: code + impl + terminal status
  |          |          |         |          |         |        |
  |-- feature exists, need E2E ----------------------|-------->|        |
  |                                            bmad-qa-generate-e2e-tests
- |                                            >> API/E2E test suite    |
+ |                                            << in:  implemented feature + SPEC
+ |                                            >> out: API/E2E test suite
  |          |          |         |          |         |        |
  |-- epic done ------------------------------------------------------>|
  |                                                         bmad-retrospective
- |                                                         >> retro.md
- |                                                         >> actions + verdict
+ |                                                         << in:  spec folder + stories.yaml + impl + code
+ |                                                         >> out: retro.md + actions + verdict
  v          v          v         v          v         v        v
 ```
 
@@ -320,7 +423,8 @@ If mid-epic the pantry scanner is killed and you pivot to manual pantry entry:
 
 ```
 You -----> bmad-correct-course -----> (update spec / restory / or restart planning)
-              >> change proposal.md
+              << in:  "kill pantry vision" + current SPEC/sprint
+              >> out: change proposal.md
 ```
 
 ---
@@ -334,87 +438,111 @@ This is the long path. Planning tools are independent — skip any box you do no
      You        Mary/Analyst           John/PM         Sally/UX      Winston/Arch      Amelia/Dev
       |              |                    |                |               |                |
       |-- lost?      |                    |                |               |                |
-      |  bmad-help   |                    |                |               |                |
+      |  bmad-help   |  << in:  "what first?" + empty repo                                  |
+      |              |  >> out: (none — recommends brainstorm)                              |
       |              |                    |                |               |                |
       |== PHASE: THINK ================================================================     |
       |              |                    |                |               |                |
       |-- brainstorm -------------------->|                |               |                |
-      |         bmad-brainstorming        |  >> brainstorm.html, brainstorm-intent.md       |
+      |         bmad-brainstorming        |  << in:  "family food + AI" (fuzzy)             |
+      |                                  |  >> out: brainstorm.html, brainstorm-intent.md   |
       |              |                    |                |               |                |
       |-- "is this even a good idea?" ---> |                |               |                |
-      |         bmad-forge-idea           |  >> forge-report.html, forged-idea.md           |
+      |         bmad-forge-idea           |  << in:  chosen direction from brainstorm       |
+      |                                  |  >> out: forge-report.html, forged-idea.md       |
       |              |                    |                |               |                |
       |-- research market / users / tech >|                |               |                |
-      |         bmad-deep-recon           |  >> research/{market,user-voice,tech}.md        |
-      |         (MR, UV, TR, …)           |                |               |                |
+      |         bmad-deep-recon           |  << in:  subject + type (MR, UV, TR, …)         |
+      |                                  |  >> out: research/{market,user-voice,tech}.md    |
       |              |                    |                |               |                |
       |-- optional: all agents debate --------------------------------------------->        |
       |         bmad-party-mode  (Mary + John + Winston + Sally + Amelia)                   |
-      |         >> memories/installed/.memlog.md + party-mode/{date}-*.html keepsake        |
+      |         << in:  "should v1 attempt pantry vision?" + forged-idea + recon            |
+      |         >> out: memories/installed/.memlog.md + {date}-*.html keepsake              |
       |              |                    |                |               |                |
       |== PHASE: WRITE THE PRODUCT =================================================        |
       |              |                    |                |               |                |
       |-- concept is clear, write brief ->|                |               |                |
-      |         bmad-product-brief        |  >> brief.md, addendum.md      |                |
+      |         bmad-product-brief        |  << in:  forged-idea + recon + party takeaway   |
+      |                                  |  >> out: brief.md, addendum.md  |                |
       |    OR stress-test working-backwards                 |               |                |
-      |         bmad-prfaq                |  >> prfaq-*.md                 |                |
+      |         bmad-prfaq                |  << in:  the product concept + recon            |
+      |                                  |  >> out: prfaq-*.md             |                |
       |              |                    |                |               |                |
       |-- org needs sign-off -------------------------------->|            |                |
       |                                  bmad-prd             |            |                |
-      |                                  create|update|validate            |                |
-      |                                  >> prd.md, addendum.md, .memlog.md                |
-      |                                  >> validate: HTML + .md findings  |                |
+      |                                  create:  << in:  brief.md and/or prfaq + recon     |
+      |                                  update:  << in:  prd.md + change signal            |
+      |                                  validate:<< in:  finished prd.md + checklist       |
+      |                                  >> out: prd.md, addendum.md, .memlog.md            |
+      |                                  >> out: validate HTML + .md findings               |
       |              |                    |                |               |                |
       |-- UI is the product ---------------------------------------------->|                |
       |                                                 bmad-ux            |                |
-      |                                                 >> DESIGN.md, EXPERIENCE.md         |
+      |                                                 << in:  prd.md                      |
+      |                                                 >> out: DESIGN.md, EXPERIENCE.md    |
       |              |                    |                |               |                |
       |-- several people will build in parallel ------------------------------------>|      |
       |                                                              bmad-architecture      |
-      |                                                              >> ARCHITECTURE-SPINE.md
+      |                                                              << in:  prd.md + DESIGN.md
+      |                                                              >> out: ARCHITECTURE-SPINE.md
       |              |                    |                |               |                |
       |-- lock WHAT (per epic) ------------------------------------------------------       |
-      |         bmad-spec                 >> specs/spec-{slug}/SPEC.md + stories.yaml       |
+      |         bmad-spec                 << in:  prd.md + UX + spine (condensed)           |
+      |                                  >> out: specs/spec-{slug}/SPEC.md + stories.yaml   |
       |              |                    |                |               |                |
       |== PHASE: SLICE + GATE ======================================================        |
       |              |                    |                |               |                |
       |-- break into epics/stories ------------------------>|              |                |
       |                         bmad-create-epics-and-stories              |                |
-      |                         >> planning/epics/*.md + story files       |                |
+      |                         << in:  ARCHITECTURE-SPINE.md + prd.md     |                |
+      |                         >> out: planning/epics/*.md + story files  |                |
       |              |                    |                |               |                |
       |-- ready to implement? -------------------------------------------->|                |
       |                         bmad-sprint-planning (IR + tracking)       |                |
-      |                         >> PASS|CONCERNS|FAIL + sprint-status.yaml |                |
+      |                         << in:  epics/stories                      |                |
+      |                         >> out: PASS|CONCERNS|FAIL + sprint-status.yaml             |
       |              |                    |                |               |                |
       |== PHASE: SHIP =================================================================     |
       |              |                    |                |               |                |
       |-- implement next story ---------------------------------------------------------->  |
       |                                                                    bmad-build       |
-      |                                                                    >> code + impl record
+      |                                                                    << in:  one story + SPEC.md + codebase
+      |                                                                    >> out: code + impl record
       |              |                    |                |               |                |
       |-- extra review ------------------------------------------------------------------>  |
       |                                                                    bmad-code-review |
-      |                                                                    >> findings + patches
+      |                                                                    << in:  the change (diff/PR)
+      |                                                                    >> out: findings + patches
       |              |                    |                |               |                |
       |-- walk me through the PR -------------------------------------------------------->  |
       |                                                            bmad-checkpoint-preview  |
-      |                                                            >> walkthrough (rarely a file)
+      |                                                            << in:  commit / branch / PR
+      |                                                            >> out: walkthrough (rarely a file)
       |              |                    |                |               |                |
       |-- automate E2E ------------------------------------------------------------------>  |
       |                                                       bmad-qa-generate-e2e-tests    |
-      |                                                       >> API/E2E test suite         |
+      |                                                       << in:  implemented feature + SPEC
+      |                                                       >> out: API/E2E test suite    |
       |              |                    |                |               |                |
       |-- epic closed ------------------------------------------------------------------>   |
       |                                                                    bmad-retrospective
-      |                                                                    >> retro.md + verdict
+      |                                                                    << in:  spec folder + stories.yaml + impl + code
+      |                                                                    >> out: retro.md + verdict
       |              |                    |                |               |                |
       |== ANYTIME ESCAPES =============================================================     |
       |  draft feels thin .............. bmad-advanced-elicitation                          |
+      |     << in: just-written draft     >> out: in-place edits                            |
       |  review any artifact ........... bmad-review                                        |
+      |     << in: path to artifact       >> out: findings.json + .md                       |
       |  plan just exploded ............ bmad-correct-course                                |
+      |     << in: change + current plan  >> out: change proposal                           |
       |  agents keep making same mistake bmad-project-context (record pitfall)              |
+      |     << in: observed mistake       >> out: AGENTS.md pitfall line                    |
       |  change how BMad behaves ....... bmad-customize                                     |
+      |     << in: skill + override       >> out: _bmad/custom/*.toml                       |
       |  unattended later stories ...... bmad-build-auto                                    |
+      |     << in: one bounded story      >> out: code + impl + terminal status             |
       v              v                    v                v               v                v
 ```
 
@@ -431,27 +559,35 @@ You                 Context              Help           Spec/Build         Revie
  |    repo / make      |                   |                 |                |
  |    agents useful" ->|                   |                 |                |
  |              bmad-project-context       |                 |                |
- |              setup | refresh |          |  >> AGENTS.md managed block     |
- |              record | audit             |                 |                |
+ |              setup | refresh |          |  << in:  the repo (scripts, pkg manager)
+ |              record | audit             |  >> out: AGENTS.md managed block
  |                    |                   |                 |                |
  |-- "what next?" ------------------------>|                 |                |
  |                                 bmad-help                 |                |
+ |                                 << in:  question + AGENTS.md + repo state
+ |                                 >> out: (none — next skill)
  |                    |                   |                 |                |
  |-- well-defined change ----------------------------------->|                |
- |                                              bmad-spec?   |  >> SPEC.md + companions
+ |                                              bmad-spec?   |  << in:  ticket / brain dump
+ |                                                           |  >> out: SPEC.md + companions
  |                                              then         |                |
- |                                              bmad-build   |  >> code + impl record
+ |                                              bmad-build   |  << in:  SPEC.md + codebase
+ |                                                           |  >> out: code + impl record
  |                    |                   |                 |                |
  |                    |                   |                 |                |
  |-- agent used npm test again, it is pnpm ----------------->|                |
  |              bmad-project-context                         |                |
  |              (record pitfall)                             |                |
+ |              << in:  the observed mistake                 |                |
+ |              >> out: AGENTS.md (+ pitfall line)           |                |
  |                    |                   |                 |                |
  |-- before merge ---------------------------------------------------------->|
  |                                                            bmad-review    |
- |                                                            >> findings.json + .md
+ |                                                            << in:  path to spec/diff
+ |                                                            >> out: findings.json + .md
  |                                                         or bmad-code-review
- |                                                            >> findings + patches
+ |                                                            << in:  the change
+ |                                                            >> out: findings + patches
  v                    v                   v                 v                v
 ```
 
@@ -468,17 +604,17 @@ Use case: "I want to do something with food and AI." That is too thin for a spec
                                 |
                                 v
                       bmad-brainstorming
-                     (generate options)
-                     >> brainstorm.html
+                     << in:  "something with food and AI"
+                     >> out: brainstorm.html
                                 |
                                 v
                          pick a direction
                                 |
                                 v
                         bmad-forge-idea
-                  (harden, prove, or kill)
-                  >> forge-report.html
-                  >> forged-idea.md (if it hardens)
+                  << in:  the chosen direction
+                  >> out: forge-report.html
+                  >> out: forged-idea.md (if it hardens)
                                 |
               ┌─────────────────┴─────────────────┐
               |                                   |
@@ -486,17 +622,18 @@ Use case: "I want to do something with food and AI." That is too thin for a spec
               |                                   |
               v                                   v
            STOP                         bmad-deep-recon
-                                  market + user-voice +
-                                  competitive + technical
-                                  >> research/*.md
+                                  << in:  subject + type
+                                  >> out: research/*.md
                                               |
                                               v
                                brief ──or── PRFAQ ──or── PRD
-                               >> brief.md / prfaq-*.md / prd.md
+                               << in:  forged-idea + recon
+                               >> out: brief.md / prfaq-*.md / prd.md
                                               |
                                               v
                                           bmad-spec
-                                          >> SPEC.md
+                                          << in:  that written intent (condensed)
+                                          >> out: SPEC.md
 ```
 
 When to pick brief vs PRFAQ vs PRD:
@@ -612,13 +749,21 @@ You          PM (John)         Correct Course        then maybe…
  |               |                    |                  |
  |-- "the API is dying" ------------->|                  |
  |                    bmad-correct-course                |
- |                    assesses blast radius              |
- |                    >> change proposal.md              |
+ |                    << in:  "API is dying" + prd/arch/epics/sprint
+ |                    >> out: change proposal.md          |
  |               |                    |                  |
- |               |                    |-- update PRD ---> bmad-prd            >> prd.md
- |               |                    |-- redo arch ----> bmad-architecture   >> ARCHITECTURE-SPINE.md
- |               |                    |-- restory ------> bmad-create-epics-and-stories >> epics/*.md
- |               |                    |-- replan -------> bmad-sprint-planning >> sprint-status.yaml
+ |               |                    |-- update PRD ---> bmad-prd
+ |               |                    |     << in:  prd.md + the proposal
+ |               |                    |     >> out: prd.md
+ |               |                    |-- redo arch ----> bmad-architecture
+ |               |                    |     << in:  updated prd + codebase
+ |               |                    |     >> out: ARCHITECTURE-SPINE.md
+ |               |                    |-- restory ------> bmad-create-epics-and-stories
+ |               |                    |     << in:  new spine + prd
+ |               |                    |     >> out: epics/*.md
+ |               |                    |-- replan -------> bmad-sprint-planning
+ |               |                    |     << in:  new epics + old sprint-status.yaml
+ |               |                    |     >> out: repaired sprint-status.yaml
  |               |                    |-- start over ---> brief / PRFAQ / spec
  v               v                    v                  v
 ```
@@ -662,8 +807,8 @@ You                Party Mode              Mary    John    Winston   Sally   Ame
  |-- "run a party" ---> |                    |       |         |        |        |
  |              bmad-party-mode              |       |         |        |        |
  |              --mode auto                  |       |         |        |        |
- |                     |                    |       |         |        |        |
- |              READ memories/installed/.memlog.md (if memory on)               |
+ |              << in:  topic + optional --party/--mode                         |
+ |              << in:  memories/installed/.memlog.md (if memory on)             |
  |                     |                    |       |         |        |        |
  |                     |-- analyst -------->|       |         |        |        |
  |                     |-- PM ----------------------|->       |        |        |
@@ -676,11 +821,12 @@ You                Party Mode              Mary    John    Winston   Sally   Ame
  |                     |                    |       |         |        |        |
  |-- you signal done ->|                    |       |         |        |        |
  |              takeaways + optional HTML keepsake                              |
- |              >> party-mode/{date}-*.html                                     |
- |              >> party-mode/memories/installed/.memlog.md                     |
+ |              >> out: party-mode/{date}-*.html                                |
+ |              >> out: party-mode/memories/installed/.memlog.md                |
  |                     |                    |       |         |        |        |
  |-- if it hardened, hand off to bmad-spec or bmad-prd                          |
- |              >> SPEC.md  or  prd.md                                          |
+ |              << in:  party takeaways (+ keepsake / memlog)                   |
+ |              >> out: SPEC.md  or  prd.md                                     |
  v                     v                    v       v         v        v        v
 ```
 
@@ -842,34 +988,34 @@ deprecated shims (20)
 
 ## 19. One-line "when" for every current skill
 
-| Skill | Use when | Writes |
-|---|---|---|
-| `bmad-help` | You are lost, or asking "what next?" | (none) |
-| `bmad-brainstorming` | You need options, not a decision | `brainstorm.html`, optional `brainstorm-intent.md` |
-| `bmad-forge-idea` | You have an idea and want it hardened or killed | `forge-report.html`, optional `forged-idea.md` |
-| `bmad-deep-recon` | A decision needs evidence (any research type) | `research/*.md` (+ optional HTML) |
-| `bmad-advanced-elicitation` | A just-produced draft needs a second, harder pass | In-place edits |
-| `bmad-review` | Any artifact needs multi-lens critique before it ships | findings JSON + markdown |
-| `bmad-party-mode` | You want several agents / personas in one room | keepsake HTML, per-party `.memlog.md`, optional custom TOML |
-| `bmad-customize` | You want lasting behavior/template/menu changes | `_bmad/custom/*.toml` |
-| `bmad-agent-analyst` | You want Mary facilitating analysis work | (none — dispatches) |
-| `bmad-agent-pm` | You want John facilitating product work | (none — dispatches) |
-| `bmad-agent-architect` | You want Winston facilitating architecture work | (none — dispatches) |
-| `bmad-agent-ux-designer` | You want Sally facilitating UX work | (none — dispatches) |
-| `bmad-agent-dev` | You want Amelia facilitating implementation work | (none — dispatches) |
-| `bmad-product-brief` | Concept is clear; write the vision before a PRD | `brief.md`, `addendum.md` |
-| `bmad-prfaq` | You want Working-Backwards stress-test, not a gentle brief | `prfaq-*.md` |
-| `bmad-prd` | Create, update, or validate a Product Requirements Document | `prd.md` / validation HTML |
-| `bmad-ux` | UI/UX is a primary surface and needs written design | `DESIGN.md`, `EXPERIENCE.md` |
-| `bmad-spec` | Lock WHAT into a short machine contract Build can read | `SPEC.md` + companions, optional `stories.yaml` |
-| `bmad-architecture` | Lock HOW so independently built parts stay consistent | `ARCHITECTURE-SPINE.md` |
-| `bmad-create-epics-and-stories` | Slice a PRD/architecture into an implementation backlog | epic + story files |
-| `bmad-sprint-planning` | Gate readiness and/or track/repair sprint status | verdict + `sprint-status.yaml` |
-| `bmad-project-context` | Teach agents this repo (commands, policy, pitfalls) | `AGENTS.md` managed block |
-| `bmad-build` | Implement one intent/story with you in the loop | code + impl record |
-| `bmad-build-auto` | Implement one unit unattended for an orchestrator | code + impl + terminal status |
-| `bmad-code-review` | Extra adversarial review of a code change | findings + optional patches |
-| `bmad-checkpoint-preview` | You want a guided human walkthrough of a change | walkthrough (usually no file) |
-| `bmad-qa-generate-e2e-tests` | Feature exists; you want API/E2E automation | API / E2E test suite |
-| `bmad-correct-course` | Mid-flight change is big enough to threaten the plan | change proposal |
-| `bmad-retrospective` | An epic is done; judge the evidence and extract lessons | retro doc + verdict |
+| Skill | Use when | Reads (`<< in`) | Writes (`>> out`) |
+|---|---|---|---|
+| `bmad-help` | You are lost, or asking "what next?" | your question + existing artifacts | (none) |
+| `bmad-brainstorming` | You need options, not a decision | a topic or "I'm stuck" | `brainstorm.html`, optional `brainstorm-intent.md` |
+| `bmad-forge-idea` | You have an idea and want it hardened or killed | the idea (sentence or short brief) | `forge-report.html`, optional `forged-idea.md` |
+| `bmad-deep-recon` | A decision needs evidence (any research type) | subject + type, or a report to process, or candidates | `research/*.md` (+ optional HTML) |
+| `bmad-advanced-elicitation` | A just-produced draft needs a second, harder pass | that draft + a method | in-place edits |
+| `bmad-review` | Any artifact needs multi-lens critique before it ships | path to doc/diff/spec + optional lenses | findings JSON + markdown |
+| `bmad-party-mode` | You want several agents / personas in one room | topic; optional `--party`/`--mode`; memlog; or interview notes to author a cast | keepsake HTML, `.memlog.md`, optional custom TOML |
+| `bmad-customize` | You want lasting behavior/template/menu changes | skill name + the override | `_bmad/custom/*.toml` |
+| `bmad-agent-analyst` | You want Mary facilitating analysis work | "talk to Mary" or a menu code | (none — dispatches) |
+| `bmad-agent-pm` | You want John facilitating product work | "talk to John" or a menu code | (none — dispatches) |
+| `bmad-agent-architect` | You want Winston facilitating architecture work | "talk to Winston" or a menu code | (none — dispatches) |
+| `bmad-agent-ux-designer` | You want Sally facilitating UX work | "talk to Sally" or `CU` | (none — dispatches) |
+| `bmad-agent-dev` | You want Amelia facilitating implementation work | "talk to Amelia" or `BD`/`CR`/`QA` | (none — dispatches) |
+| `bmad-product-brief` | Concept is clear; write the vision before a PRD | the concept; optional recon / forged-idea | `brief.md`, `addendum.md` |
+| `bmad-prfaq` | You want Working-Backwards stress-test, not a gentle brief | the product concept; optional recon / forge | `prfaq-*.md` |
+| `bmad-prd` | Create, update, or validate a Product Requirements Document | create: brief/PRFAQ/brain dump; update: `prd.md` + change signal; validate: finished PRD | `prd.md` / validation HTML |
+| `bmad-ux` | UI/UX is a primary surface and needs written design | PRD or spec | `DESIGN.md`, `EXPERIENCE.md` |
+| `bmad-spec` | Lock WHAT into a short machine contract Build can read | any intent (brief, PRD, transcript, dump, folder) | `SPEC.md` + companions, optional `stories.yaml` |
+| `bmad-architecture` | Lock HOW so independently built parts stay consistent | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` |
+| `bmad-create-epics-and-stories` | Slice a PRD/architecture into an implementation backlog | architecture + PRD/spec | epic + story files |
+| `bmad-sprint-planning` | Gate readiness and/or track/repair sprint status | epics/stories, or existing `sprint-status.yaml` | verdict + `sprint-status.yaml` |
+| `bmad-project-context` | Teach agents this repo (commands, policy, pitfalls) | the repo / an observed mistake / current `AGENTS.md` | `AGENTS.md` managed block |
+| `bmad-build` | Implement one intent/story with you in the loop | sentence, issue, `SPEC.md`, or one story + the codebase | code + impl record |
+| `bmad-build-auto` | Implement one unit unattended for an orchestrator | one bounded story + spec + codebase | code + impl + terminal status |
+| `bmad-code-review` | Extra adversarial review of a code change | a diff / branch / PR | findings + optional patches |
+| `bmad-checkpoint-preview` | You want a guided human walkthrough of a change | a commit / branch / PR | walkthrough (usually no file) |
+| `bmad-qa-generate-e2e-tests` | Feature exists; you want API/E2E automation | implemented code (+ SPEC success conditions) | API / E2E test suite |
+| `bmad-correct-course` | Mid-flight change is big enough to threaten the plan | change signal + current PRD/arch/epics/sprint | change proposal |
+| `bmad-retrospective` | An epic is done; judge the evidence and extract lessons | spec folder, `stories.yaml`, impl records, code | retro doc + verdict |

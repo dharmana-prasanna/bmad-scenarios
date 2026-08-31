@@ -18,73 +18,85 @@ Deprecated names someone on the team might still type: `bmad-document-project`, 
 
 ---
 
-## Sequence (artifacts on the right)
+## Sequence (`<< in` / `>> out`)
 
 ```
-YOU          SKILL                                ARTIFACTS WRITTEN
- |                |                                      |
- |== DAY 0: MAKE AGENTS USEFUL IN THIS REPO =============|
- |                 bmad-project-context  setup           |
- |                |  verifies: pnpm test, docker compose |
- |                |  up db, playwright against :5433     |
- |                |  records policy: email is account key|
- |                |  records pitfall: never npm install  |
- |                |                                      |  AGENTS.md   (managed BMad block)
- |                |                                      |
- |                 bmad-customize                        |  _bmad/custom/bmad-build.toml
- |                |  team override: always pnpm;         |  (shared with the squad)
- |                |  never touch schema.prisma users.email
- |                |                                      |
- |                 bmad-help                             |  (none — "spec the SSO epic")
- |                |                                      |
- |== CHOOSE THE IDP SHAPE ===============================|
- |                 bmad-deep-recon  type=technical       |  research/technical-oidc-nextauth.md
- |                 bmad-deep-recon  shape=select         |  research/select-auth0-vs-clerk-vs-ory.md
- |                |  decision: Auth0, NextAuth already   |
- |                |  in the tree, keep Prisma User       |
- |                |                                      |
- |== RATIFY HOW, THEN LOCK WHAT =========================|
- |                 bmad-architecture                     |  planning/ARCHITECTURE-SPINE.md
- |                |  BROWNFIELD MODE: does not invent a  |
- |                |  new stack. Ratifies: NextAuth is    |
- |                |  the only auth entry; User.id stays  |
- |                |  internal PK; email remains unique;  |
- |                |  new Account rows for OIDC links     |
- |                |                                      |
- |                 bmad-spec                             |  specs/spec-sso-oidc/SPEC.md
- |                |  sources: Linear ticket + spine +    |  specs/spec-sso-oidc/stories.yaml
- |                |  recon select writeup                |  specs/spec-sso-oidc/id-mapping.md
- |                |                                      |
- |                 bmad-review                           |  review/spec-sso-findings.json
- |                 lenses=adversarial,edge-case,         |  review/spec-sso-findings.md
- |                        verification-gap               |
- |                |  found: account-linking when the     |
- |                |  same email already has a password   |
- |                 bmad-spec   intent=update             |  SPEC.md (stable capability IDs)
- |                |                                      |
- |== SHIP =================================================|
- |                 bmad-build   story=1-nextauth-auth0   |  app/api/auth/[...nextauth]/
- |                |                                      |  specs/.../impl/1-nextauth-auth0.md
- |                 bmad-build   story=2-account-link     |  lib/auth/link-account.ts
- |                |                                      |  + impl record
- |                 bmad-build   story=3-admin-sso-flag   |  prisma migration + admin UI hook
- |                |                                      |  + impl record
- |                |                                      |
- |                 bmad-code-review                      |  findings + patches
- |                |  (second model, not the builder)     |
- |                 bmad-checkpoint-preview               |  (walk the linking edge cases)
- |                |                                      |
- |                 bmad-qa-generate-e2e-tests            |  e2e/sso-login.spec.ts
- |                |                                      |  e2e/sso-account-link.spec.ts
- |                |                                      |
- |== AGENT TRIPPED; RECORD IT ===========================|
- |  Amelia ran `npm test` and broke the lockfile         |
- |                 bmad-project-context  record          |  AGENTS.md  (+ pitfall line)
- |                |                                      |
- |                 bmad-retrospective                    |  implementation/retro-sso-oidc.md
- |                |  verdict: ACCEPT with note —         |  action: staging Auth0 tenant runbook
- |                |  staging tenant was undocumented     |
- v                v                                      v
+YOU          SKILL
+ |                |
+ |== DAY 0: MAKE AGENTS USEFUL IN THIS REPO =============
+ |                 bmad-project-context  setup
+ |                      << in:  the living Next.js repo (pnpm, docker compose,
+ |                              Playwright :5433, email-is-account-key policy)
+ |                      >> out: AGENTS.md  (managed BMad block)
+ |
+ |                 bmad-customize
+ |                      << in:  "always pnpm; never touch users.email"
+ |                      >> out: _bmad/custom/bmad-build.toml  (team)
+ |
+ |                 bmad-help
+ |                      << in:  Linear ticket + AGENTS.md + repo
+ |                      >> out: (none — "spec the SSO epic")
+ |
+ |== CHOOSE THE IDP SHAPE ===============================
+ |                 bmad-deep-recon  type=technical
+ |                      << in:  "OIDC beside existing NextAuth + Prisma User"
+ |                      >> out: research/technical-oidc-nextauth.md
+ |                 bmad-deep-recon  shape=select
+ |                      << in:  Auth0 vs Clerk vs Ory
+ |                      >> out: research/select-auth0-vs-clerk-vs-ory.md
+ |
+ |== RATIFY HOW, THEN LOCK WHAT =========================
+ |                 bmad-architecture
+ |                      << in:  the existing codebase + recon select
+ |                      >> out: planning/ARCHITECTURE-SPINE.md
+ |                 BROWNFIELD: ratifies NextAuth as the only auth entry;
+ |                 User.id stays PK; email stays unique; new Account rows.
+ |
+ |                 bmad-spec
+ |                      << in:  Linear ticket + spine + select writeup
+ |                      >> out: specs/spec-sso-oidc/SPEC.md
+ |                      >> out: specs/spec-sso-oidc/stories.yaml
+ |                      >> out: specs/spec-sso-oidc/id-mapping.md
+ |
+ |                 bmad-review  lenses=adversarial,edge-case,verification-gap
+ |                      << in:  SPEC.md
+ |                      >> out: review/spec-sso-findings.json + .md
+ |                 bmad-spec   intent=update
+ |                      << in:  existing SPEC.md + review findings
+ |                      >> out: SPEC.md (stable capability IDs)
+ |
+ |== SHIP =================================================
+ |                 bmad-build   story=1-nextauth-auth0
+ |                      << in:  stories.yaml #1 + SPEC.md + existing NextAuth
+ |                      >> out: app/api/auth/[...nextauth]/ + impl record
+ |                 bmad-build   story=2-account-link
+ |                      << in:  stories.yaml #2 + SPEC.md + story-1 code
+ |                      >> out: lib/auth/link-account.ts + impl record
+ |                 bmad-build   story=3-admin-sso-flag
+ |                      << in:  stories.yaml #3 + SPEC.md + linking code
+ |                      >> out: prisma migration + admin UI hook + impl record
+ |
+ |                 bmad-code-review
+ |                      << in:  the SSO diff (second model, not the builder)
+ |                      >> out: findings + patches
+ |                 bmad-checkpoint-preview
+ |                      << in:  the linking PR
+ |                      >> out: walkthrough of account-link edge cases
+ |
+ |                 bmad-qa-generate-e2e-tests
+ |                      << in:  implemented SSO + SPEC success conditions
+ |                      >> out: e2e/sso-login.spec.ts, e2e/sso-account-link.spec.ts
+ |
+ |== AGENT TRIPPED; RECORD IT ===========================
+ |  Amelia ran `npm test` and broke the lockfile
+ |                 bmad-project-context  record
+ |                      << in:  the observed mistake (npm vs pnpm)
+ |                      >> out: AGENTS.md  (+ pitfall line)
+ |
+ |                 bmad-retrospective
+ |                      << in:  spec folder + stories.yaml + impl + code
+ |                      >> out: implementation/retro-sso-oidc.md + ACCEPT
+ v                v
 ```
 
 ---

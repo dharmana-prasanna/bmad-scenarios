@@ -33,6 +33,22 @@ Party mode is not a panel that files answers. If the transcript reads like five 
 
 ---
 
+## What party mode reads and writes
+
+```
+<< in  (any run)
+    a topic ("Twilio vs WebRTC vs Doxy — pick a lane")
+    optional --party <id> / --mode <session|auto|subagent|agent-team>
+    optional --non-interactive
+    existing memories/<party>/.memlog.md   (if that room's memory is on)
+    for authoring: interview notes, a cast idea, or a live ad-hoc roster to save
+
+>> out (when they apply)
+    memories/<party>/.memlog.md            live append if memory on
+    {date}-*.html keepsake                 on wrap, if you accept
+    _bmad/custom/bmad-party-mode*.toml     only when authoring / saving a cast
+```
+
 ## Artifacts party mode actually writes
 
 ```
@@ -81,14 +97,16 @@ Room B is **distilled from real interview notes** (the "focus group from data" a
 Use `bmad-party-mode` itself (create/configure intent), which writes through `bmad-customize`. Do not hand-edit TOML.
 
 ```
-YOU          PARTY MODE / CUSTOMIZE                    ARTIFACTS WRITTEN
- |                    |                                      |
+YOU          PARTY MODE / CUSTOMIZE
+ |                    |
  |-- "build me a patient + clinician focus group             |
  |    from these 14 interview notes" ----------------------->|
- |                    |                                      |
- |             bmad-party-mode                               |
- |             intent = create / configure                   |
- |             loads references/create-party.md              |
+ |                    |
+ |             bmad-party-mode
+ |             intent = create / configure
+ |                      << in:  14 interview notes (or a spreadsheet / export)
+ |                      << in:  "patient + clinician focus group"
+ |             loads references/create-party.md
  |                    |                                      |
  |             clusters notes by behavior                    |
  |             (not demographics alone):                     |
@@ -97,8 +115,10 @@ YOU          PARTY MODE / CUSTOMIZE                    ARTIFACTS WRITTEN
  |                    |                                      |
  |             proposes 4 personas, you correct the cut      |
  |                    |                                      |
- |             bmad-customize                                |  _bmad/custom/bmad-party-mode.user.toml
- |             target = bmad-party-mode [workflow]           |
+ |             bmad-customize
+ |                      << in:  drafted party_members + party_groups
+ |                      >> out: _bmad/custom/bmad-party-mode.user.toml
+ |             target = bmad-party-mode [workflow]
  |             writes sparse tables:                         |
  |               [[workflow.party_members]]  ×4              |
  |               [[workflow.party_groups]]                   |
@@ -110,7 +130,9 @@ YOU          PARTY MODE / CUSTOMIZE                    ARTIFACTS WRITTEN
  |                 memory  = true                            |
  |                    |                                      |
  |-- "also a red-team room for the video stack" ------------>|
- |             same skill, second group                      |  same .user.toml  (merged)
+ |             same skill, second group
+ |                      << in:  "lens panel for the video stack"
+ |                      >> out: same .user.toml (merged)
  |               id      = "video-red-team"                  |
  |               memory  = false                             |
  |               members = ["nix","pat","cal","prag"]        |
@@ -130,15 +152,15 @@ Offer `--mode subagent` (or set `party_mode = "subagent"` on the group) for a fo
 Topic: A vs B vs C. Mode `auto` — inline banter, spawn real agents when independent thinking changes the outcome.
 
 ```
-YOU          ROOM A (installed)                       ARTIFACTS
- |                    |                                      |
+YOU          ROOM A (installed)
+ |                    |
  |-- bmad-party-mode --mode auto --------------------------->|
- |             resolve_party.py → roster = Mary, John,       |
- |             Winston, Sally, Amelia                        |
- |             memory_enabled = true                         |
- |                    |                                      |
- |             READ memories/installed/.memlog.md            |
- |             (first run: empty — init, then append)        |  party-mode/memories/installed/.memlog.md
+ |                      << in:  --mode auto (no --party → installed roster)
+ |                      << in:  memories/installed/.memlog.md (empty first run)
+ |             resolve_party.py → roster = Mary, John,
+ |             Winston, Sally, Amelia
+ |             memory_enabled = true
+ |                      >> out: party-mode/memories/installed/.memlog.md  (init)
  |                    |                                      |
  |             welcome: icons, names, one-line roles         |
  |             "what's the thing?"                           |
@@ -183,9 +205,10 @@ YOU          ROOM A (installed)                       ARTIFACTS
  |   and HIPAA BAA surface. Do not bow-tie it.               |
  |                    |                                      |
  |-- you: "park it. I want the waiting room next." --------->|
- |             wrap Room A                                   |
- |             takeaways read back                           |
- |             offer keepsake — you say yes                  |  party-mode/2026-06-18-atlas-video-strategy.html
+ |             wrap Room A
+ |             << in:  you signaled done
+ |             >> out: memories/installed/.memlog.md  (top-up)
+ |             >> out: party-mode/2026-06-18-atlas-video-strategy.html  (keepsake accepted)
  |             on_complete (empty)                           |
  v                    v                                      v
 ```
@@ -199,12 +222,16 @@ YOU          ROOM A (installed)                       ARTIFACTS
 Same skill, different `--party`. Carry the thread: "We are leaning toward Twilio-media + our session. What happens to you?"
 
 ```
-YOU          ROOM B (waiting-room)                    ARTIFACTS
- |                    |                                      |
+YOU          ROOM B (waiting-room)
+ |                    |
  |-- bmad-party-mode --party waiting-room                    |
  |                   --mode subagent ----------------------->|
- |             each persona thinks independently             |
- |             READ memories/waiting-room/.memlog.md         |  memories/waiting-room/.memlog.md
+ |                      << in:  --party waiting-room --mode subagent
+ |                      << in:  "Twilio-media + our session — what happens to you?"
+ |                      << in:  Room A takeaway / option D
+ |                      << in:  memories/waiting-room/.memlog.md (if any)
+ |             each persona thinks independently
+ |                      >> out: memories/waiting-room/.memlog.md
  |                    |                                      |
  |   scene plays: fluorescent lobby, 20 minutes late         |
  |                    |                                      |
@@ -230,13 +257,14 @@ YOU          ROOM B (waiting-room)                    ARTIFACTS
  |           Vince/iOS16 walk-on                             |
  |                    |                                      |
  |-- you signal done -------------------------------------->|
- |             takeaways                                     |
- |             keepsake                                      |  party-mode/2026-06-19-waiting-room-panel.html
- |             "Vince isn't in the roster. Save him?"        |
+ |             << in:  you signaled done
+ |             >> out: memories/waiting-room/.memlog.md  (top-up)
+ |             >> out: party-mode/2026-06-19-waiting-room-panel.html
+ |             "Vince isn't in the roster. Save him?"
  |-- yes -------------------------------------------------->|
- |             create-party.md → bmad-customize              |  bmad-party-mode.user.toml
- |             appends Vince; for a fixed-roster group       |  (members += vince)
- |             he is added to waiting-room.members           |
+ |             create-party.md → bmad-customize
+ |                      << in:  Vince as he played (code, persona, group)
+ |                      >> out: bmad-party-mode.user.toml  (members += vince)
  v                    v                                      v
 ```
 
@@ -247,10 +275,12 @@ YOU          ROOM B (waiting-room)                    ARTIFACTS
 No memory. Attack option D.
 
 ```
-YOU          ROOM C (video-red-team)                  ARTIFACTS
- |                    |                                      |
+YOU          ROOM C (video-red-team)
+ |                    |
  |-- bmad-party-mode --party video-red-team                  |
  |                   --mode session  --non-interactive ----->|
+ |                      << in:  --party video-red-team --mode session --non-interactive
+ |                      << in:  option D (Twilio media + Atlas VisitSession)
  |             (only non-interactive path: run to a          |
  |              natural close, then wrap)                    |
  |                    |                                      |
@@ -263,31 +293,37 @@ YOU          ROOM C (video-red-team)                  ARTIFACTS
  |   Prag : We can ship Twilio-media in a sprint if          |
  |          Safari is a known-broken badge, not a blocker.   |
  |                    |                                      |
- |             wrap → takeaways                              |
- |             you decline the keepsake this time            |  (no new HTML)
- |             memory=false → no memlog                      |  (none)
- |                    |                                      |
- |== HANDOFF OUT OF PARTY MODE ==============================|
- |             (party is done; these are other skills)       |
- |                    |                                      |
- |                 bmad-deep-recon  shape=select             |  research/select-twilio-vs-webrtc-vs-doxy.md
- |                 (now with option D in the candidate set)  |
- |                    |                                      |
- |                 bmad-prd   intent=update                  |  planning/prd.md
- |                 change signal = Room A+B+C takeaways      |  planning/addendum.md
- |                    |                                      |
- |                 bmad-architecture                         |  planning/ARCHITECTURE-SPINE.md
- |                 invariant: Atlas owns VisitSession;       |
- |                 media vendor is a replaceable adapter     |
- |                    |                                      |
- |                 bmad-spec   epic=video-visit              |  specs/spec-video-visit/SPEC.md
- |                    |                                      |  specs/spec-video-visit/stories.yaml
- |                 bmad-ux                                   |  planning/DESIGN.md
- |                    |  waiting-room chrome is ours         |  planning/EXPERIENCE.md
- |                    |  (Sally's hill, Dee/Kenji's fear)    |
- |                    |                                      |
- |                 bmad-build   (first story, human-gated)   |  code + impl record
- v                    v                                      v
+ |             wrap → takeaways
+ |             >> out: (none — you declined the keepsake; memory=false)
+ |
+ |== HANDOFF OUT OF PARTY MODE ==============================
+ |             (party is done; these are other skills)
+ |
+ |                 bmad-deep-recon  shape=select
+ |                      << in:  A vs B vs C vs D (option D now in the set)
+ |                      >> out: research/select-twilio-vs-webrtc-vs-doxy.md
+ |
+ |                 bmad-prd   intent=update
+ |                      << in:  existing prd.md + Room A+B+C takeaways
+ |                      >> out: planning/prd.md, addendum.md
+ |
+ |                 bmad-architecture
+ |                      << in:  updated prd.md + the living clinic OS
+ |                      >> out: planning/ARCHITECTURE-SPINE.md
+ |                      (Atlas owns VisitSession; media vendor is an adapter)
+ |
+ |                 bmad-spec   epic=video-visit
+ |                      << in:  updated prd + spine + waiting-room takeaways
+ |                      >> out: specs/spec-video-visit/SPEC.md + stories.yaml
+ |
+ |                 bmad-ux
+ |                      << in:  updated prd + Dee/Kenji/Omar constraints
+ |                      >> out: planning/DESIGN.md, EXPERIENCE.md
+ |
+ |                 bmad-build   (first story, human-gated)
+ |                      << in:  first story + SPEC.md + brownfield codebase
+ |                      >> out: code + impl record
+ v                    v
 ```
 
 ---
@@ -391,15 +427,15 @@ Save every walk-on                                 Save Vince; leave the janitor
 
 ## Skill coverage for this file
 
-| Skill | Role here |
-|---|---|
-| `bmad-party-mode` | Author casts, run three rooms, memory, keepsake, wrap |
-| `bmad-customize` | Persist members/groups (invoked by party-mode authoring) |
-| `bmad-deep-recon` | Select-shape writeup after option D exists |
-| `bmad-prd` | Update from party takeaways |
-| `bmad-architecture` | VisitSession invariant |
-| `bmad-spec` | Video-visit contract |
-| `bmad-ux` | Waiting-room chrome (Dee / Kenji / Omar) |
-| `bmad-build` | First implementation story, human-gated |
+| Skill | Reads | Writes |
+|---|---|---|
+| `bmad-party-mode` | topic, `--party`/`--mode`, memlog, or interview notes | keepsake HTML, `.memlog.md`, optional custom TOML |
+| `bmad-customize` | drafted members/groups | `_bmad/custom/bmad-party-mode.user.toml` |
+| `bmad-deep-recon` | A/B/C/D candidates | select-shape research writeup |
+| `bmad-prd` | existing `prd.md` + party takeaways | updated `prd.md` |
+| `bmad-architecture` | updated PRD + living clinic OS | `ARCHITECTURE-SPINE.md` |
+| `bmad-spec` | PRD + spine + waiting-room takeaways | `SPEC.md` + `stories.yaml` |
+| `bmad-ux` | PRD + Dee/Kenji/Omar constraints | `DESIGN.md`, `EXPERIENCE.md` |
+| `bmad-build` | first story + spec + brownfield codebase | code + impl record |
 
 Agents (`bmad-agent-*`) are the default Room A roster. You do not invoke them separately when party mode is already voicing them.

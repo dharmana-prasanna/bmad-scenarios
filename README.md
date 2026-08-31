@@ -24,11 +24,12 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 
 ## How to read a sequence
 
-Right-hand notes are **artifacts produced**, not extra steps.
+Right-hand notes are **inputs and outputs**, not extra steps.
 
 ```
-You -----> skill-name                 >> writes: path/or-file
-                                      >> reads:  earlier artifact
+You -----> skill-name
+              << in:  what it consumes (your words, prior artifacts, the repo)
+              >> out: what it produces
 ```
 
 ## Repo

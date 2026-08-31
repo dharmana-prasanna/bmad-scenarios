@@ -18,103 +18,94 @@ Deprecated name someone might type: `bmad-sprint-status` → `bmad-sprint-planni
 
 ---
 
-## Sequence (artifacts on the right)
+## Sequence (`<< in` / `>> out`)
 
 ```
-YOU          SKILL / ROOM                         ARTIFACTS WRITTEN
- |                |                                      |
- |== BEFORE THE BOMB (already on disk) ==================|
- |  planning/prd.md                                      |
- |  planning/ARCHITECTURE-SPINE.md   (Mongo is "the DB") |
- |  specs/spec-multi-currency/SPEC.md                    |
- |  implementation/sprint-status.yaml                    |
- |  two stories already merged to main                   |
- |                |                                      |
- |== THE BOMB ===========================================|
+YOU          SKILL / ROOM
+ |                |
+ |== BEFORE THE BOMB (already on disk) ==================
+ |  planning/prd.md
+ |  planning/ARCHITECTURE-SPINE.md   (Mongo is "the DB")
+ |  specs/spec-multi-currency/SPEC.md
+ |  implementation/sprint-status.yaml
+ |  two stories already merged to main
+ |
+ |== THE BOMB ===========================================
  |-- "legal just killed Mongo for EU tenants" ---------->|
- |                 bmad-help                             |  (none — "status, then correct-course")
- |                 bmad-sprint-planning  view=status     |  (status summary in chat)
- |                |  reads sprint-status.yaml            |  risks: 2 done, 4 ready, epic in-progress
- |                |                                      |
- |== ARGUE THE BLAST RADIUS BEFORE REWRITING PAPER ======|
- |                 bmad-party-mode                       |
- |                 --party installed --mode auto         |
- |                |                                      |
- |                |  John   : pause epic 4, we cannot    |
- |                |           ship multi-currency on a   |
- |                |           store legal just banned    |
- |                |  Winston: dual-write is a trap;      |
- |                |           cut a migration epic first |
- |                |  Amelia : two merged stories assume  |
- |                |           Mongo session semantics;   |
- |                |           revert or isolate them     |
- |                |  Mary   : DPA text ≠ "no Mongo";     |
- |                |           read the clause            |
- |                |  Sally  : (quiet) no UX change       |
- |                |                                      |
- |                |  CLASH STAYS OPEN on purpose:        |
- |                |  John wants a customer-visible pause;|
- |                |  Amelia wants a feature-flag and     |
- |                |  keeps coding. Winston refuses both  |
- |                |  until the store invariant is reset. |
- |                |                                      |  party-mode/memories/installed/.memlog.md
- |                |                                      |  party-mode/2026-05-04-ledger-store-fight.html
- |                |                                      |
- |== EVIDENCE FOR THE COURSE-CORRECT ====================|
- |                 bmad-deep-recon  type=domain          |  research/domain-gdpr-dpa-stores.md
- |                 bmad-deep-recon  type=technical       |  research/technical-mongo-to-pg.md
- |                 bmad-deep-recon  shape=select         |  research/select-prisma-pg-vs-drizzle.md
- |                |                                      |
- |== THE SKILL THIS USE CASE EXISTS FOR =================|
- |                 bmad-correct-course                   |  planning/change-proposal-store-cutover.md
- |                |                                      |
- |                |  recommendation tree it actually     |
- |                |  considers (and we take the bold one)|
- |                |                                      |
- |                |     start over?           no         |
- |                |     update PRD?           YES        |
- |                |     redo architecture?    YES        |
- |                |     rewrite epics/stories YES        |
- |                |     redo sprint planning  YES        |
- |                |     just patch the spec?  no — too   |
- |                |                           small      |
- |                |                                      |
- |== REWRITE THE UPSTREAM ARTIFACTS =====================|
- |                 bmad-prd   intent=update              |  planning/prd.md          (rewritten)
- |                |  change signal = the proposal        |  planning/addendum.md
- |                |                                      |  planning/.memlog.md
- |                 bmad-architecture                     |  planning/ARCHITECTURE-SPINE.md
- |                |  new invariants: Postgres is the     |  (Mongo demoted to "legacy read replica
- |                |  system of record; ledger rows are   |   until cutover epic closes")
- |                |  append-only; tenant region pinned   |
- |                |                                      |
- |                 bmad-create-epics-and-stories         |  planning/epics/epic-4b-pg-cutover.md
- |                |                                      |  planning/epics/epic-4-multi-currency.md
- |                |                                      |  (4 now blocked-on 4b)
- |                 bmad-spec   epic=pg-cutover           |  specs/spec-pg-cutover/SPEC.md
- |                |                                      |  specs/spec-pg-cutover/stories.yaml
- |                 bmad-review                           |  review/cutover-spec-findings.md
- |                 lenses=verification-gap,edge-case     |
- |                 bmad-sprint-planning                  |  implementation/sprint-status.yaml
- |                |  re-gate: CONCERNS (dual-running     |  (repaired + resorted)
- |                |  window, rollback story missing)     |
- |                |  add rollback story, re-run → PASS   |
- |                |                                      |
- |                 bmad-project-context  record          |  AGENTS.md
- |                |  pitfall: do not add Mongo indexes   |
- |                |  on new ledger collections           |
- |                |                                      |
- |== SHIP THE NEW COURSE ================================|
- |                 bmad-build          (schema, migrate, |  code + impl records
- |                                     dual-run, cut)    |
- |                 bmad-code-review                      |  findings + patches
- |  repetitive migration scripts, pattern now stable:    |
- |                 bmad-build-auto     (backfill chunks) |  code + impl + terminal status
- |                 bmad-qa-generate-e2e-tests            |  e2e/ledger-pg-invariants.spec.ts
- |                 bmad-retrospective                    |  implementation/retro-pg-cutover.md
- |                |  verdict: ACCEPT — DPA clause met;   |
- |                |  action: un-block epic 4 currency    |
- v                v                                      v
+ |                 bmad-help
+ |                      << in:  legal DPA + current planning artifacts
+ |                      >> out: (none — "status, then correct-course")
+ |                 bmad-sprint-planning  view=status
+ |                      << in:  implementation/sprint-status.yaml
+ |                      >> out: status summary (2 done, 4 ready, epic in-progress)
+ |
+ |== ARGUE THE BLAST RADIUS BEFORE REWRITING PAPER ======
+ |                 bmad-party-mode  --party installed --mode auto
+ |                      << in:  "Mongo is now a ship blocker" + prd/spine/sprint
+ |                      << in:  memories/installed/.memlog.md (if any)
+ |                      >> out: party-mode/memories/installed/.memlog.md
+ |                      >> out: party-mode/2026-05-04-ledger-store-fight.html
+ |
+ |== EVIDENCE FOR THE COURSE-CORRECT ====================
+ |                 bmad-deep-recon  type=domain
+ |                      << in:  the German DPA clause
+ |                      >> out: research/domain-gdpr-dpa-stores.md
+ |                 bmad-deep-recon  type=technical
+ |                      << in:  current Mongo ledger + Postgres cutover options
+ |                      >> out: research/technical-mongo-to-pg.md
+ |                 bmad-deep-recon  shape=select
+ |                      << in:  Prisma+PG vs Drizzle
+ |                      >> out: research/select-prisma-pg-vs-drizzle.md
+ |
+ |== THE SKILL THIS USE CASE EXISTS FOR =================
+ |                 bmad-correct-course
+ |                      << in:  change signal + prd.md + spine + epics + sprint-status
+ |                      << in:  party takeaway + recon
+ |                      >> out: planning/change-proposal-store-cutover.md
+ |                 take: update PRD, redo arch, restory, re-gate. Do not start over.
+ |
+ |== REWRITE THE UPSTREAM ARTIFACTS =====================
+ |                 bmad-prd   intent=update
+ |                      << in:  existing prd.md + the change proposal
+ |                      >> out: planning/prd.md (rewritten), addendum.md, .memlog.md
+ |                 bmad-architecture
+ |                      << in:  updated prd.md + the living Mongo codebase
+ |                      >> out: planning/ARCHITECTURE-SPINE.md  (Postgres SoR)
+ |                 bmad-create-epics-and-stories
+ |                      << in:  new spine + updated prd.md
+ |                      >> out: epics/epic-4b-pg-cutover.md
+ |                      >> out: epics/epic-4-multi-currency.md  (now blocked-on 4b)
+ |                 bmad-spec   epic=pg-cutover
+ |                      << in:  proposal + new spine + updated prd
+ |                      >> out: specs/spec-pg-cutover/SPEC.md + stories.yaml
+ |                 bmad-review  lenses=verification-gap,edge-case
+ |                      << in:  spec-pg-cutover/SPEC.md
+ |                      >> out: review/cutover-spec-findings.md
+ |                 bmad-sprint-planning
+ |                      << in:  new epics + old sprint-status.yaml
+ |                      >> out: repaired + resorted sprint-status.yaml (PASS)
+ |
+ |                 bmad-project-context  record
+ |                      << in:  "do not add Mongo indexes on new ledger collections"
+ |                      >> out: AGENTS.md  (+ pitfall line)
+ |
+ |== SHIP THE NEW COURSE ================================
+ |                 bmad-build          (schema, migrate, dual-run, cut)
+ |                      << in:  one cutover story + SPEC.md + codebase
+ |                      >> out: code + impl records
+ |                 bmad-code-review
+ |                      << in:  the cutover diff
+ |                      >> out: findings + patches
+ |                 bmad-build-auto     (backfill chunks, pattern now stable)
+ |                      << in:  one bounded backfill unit + spec + proven pattern
+ |                      >> out: code + impl + terminal status
+ |                 bmad-qa-generate-e2e-tests
+ |                      << in:  cutover code + SPEC invariants
+ |                      >> out: e2e/ledger-pg-invariants.spec.ts
+ |                 bmad-retrospective
+ |                      << in:  spec-pg-cutover/ + stories.yaml + impl + code
+ |                      >> out: implementation/retro-pg-cutover.md + ACCEPT
+ v                v
 ```
 
 ---

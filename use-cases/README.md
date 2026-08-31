@@ -1,6 +1,6 @@
 # End-to-end use cases
 
-Six projects that walk BMad Method from a messy question to shipped work. Each file is a standalone ASCII sequence with the artifacts each skill writes.
+Six projects that walk BMad Method from a messy question to shipped work. Each file is a standalone ASCII sequence with **what each skill reads** and **what it writes**.
 
 Skill catalog and “when to use which” live in [`../bmad-skill-decision-diagrams.md`](../bmad-skill-decision-diagrams.md).
 
@@ -15,41 +15,42 @@ Skill catalog and “when to use which” live in [`../bmad-skill-decision-diagr
 
 ## How to read a sequence
 
-Right-hand notes are **artifacts produced**, not extra steps.
+Right-hand notes are **inputs and outputs**, not extra steps.
 
 ```
-You -----> skill-name                 >> writes: path/or-file
-                                      >> reads:  earlier artifact
+You -----> skill-name
+              << in:  what it consumes (your words, prior artifacts, the repo)
+              >> out: what it produces
 ```
 
 Conversation-only skills (`bmad-help`, `bmad-advanced-elicitation`, `bmad-checkpoint-preview` mid-walkthrough) still appear; they may write nothing durable.
 
-## Artifact cheat sheet (current skills)
+## Input / output cheat sheet (current skills)
 
-| Skill | Typical artifacts |
-|---|---|
-| `bmad-help` | None (next-skill recommendation) |
-| `bmad-brainstorming` | `{output}/brainstorming/brainstorm.html`, optional `brainstorm-intent.md` |
-| `bmad-forge-idea` | `{output}/forge/forge-report.html`, optional `forged-idea.md` |
-| `bmad-deep-recon` | `{planning}/research/*.md` (+ optional HTML briefing) |
-| `bmad-advanced-elicitation` | In-place improvements to the draft just produced |
-| `bmad-review` | Findings JSON + markdown report |
-| `bmad-party-mode` | `{output}/party-mode/YYYY-MM-DD-*.html` keepsake; `{output}/party-mode/memories/<party>/.memlog.md`; optional `_bmad/custom/bmad-party-mode.user.toml` |
-| `bmad-customize` | `_bmad/custom/<skill>.toml` or `<skill>.user.toml` |
-| `bmad-product-brief` | `brief.md` + `addendum.md` |
-| `bmad-prfaq` | `prfaq-*.md` |
-| `bmad-prd` | Create/update: `prd.md`, `addendum.md`, `.memlog.md`. Validate: HTML + `.md` findings |
-| `bmad-ux` | `DESIGN.md`, `EXPERIENCE.md`, `.memlog.md` |
-| `bmad-spec` | `specs/spec-{slug}/SPEC.md` + companions; optional `stories.yaml` |
-| `bmad-architecture` | `ARCHITECTURE-SPINE.md` (brownfield: ratifies the existing system) |
-| `bmad-create-epics-and-stories` | Epic files + stories under planning artifacts |
-| `bmad-sprint-planning` | Readiness verdict (PASS/CONCERNS/FAIL) + `sprint-status.yaml` |
-| `bmad-project-context` | Managed block in repo-root `AGENTS.md` |
-| `bmad-build` | Code + per-story implementation record under the spec folder |
-| `bmad-build-auto` | Same as build, plus terminal status for an orchestrator |
-| `bmad-code-review` | Findings + optional applied patches |
-| `bmad-checkpoint-preview` | Guided walkthrough (usually conversation-only) |
-| `bmad-qa-generate-e2e-tests` | API / E2E test suite in the repo |
-| `bmad-correct-course` | Change proposal (then may rewrite PRD / arch / epics / sprint) |
-| `bmad-retrospective` | Retro doc + action items + acceptance verdict |
-| `bmad-agent-*` | None of their own — they dispatch the workflows above |
+| Skill | Reads (`<< in`) | Writes (`>> out`) |
+|---|---|---|
+| `bmad-help` | your question + existing artifacts | none (next-skill recommendation) |
+| `bmad-brainstorming` | a topic or "I'm stuck" | `{output}/brainstorming/brainstorm.html`, optional `brainstorm-intent.md` |
+| `bmad-forge-idea` | the idea (sentence or short brief) | `{output}/forge/forge-report.html`, optional `forged-idea.md` |
+| `bmad-deep-recon` | subject + type, or a report to process, or candidates | `{planning}/research/*.md` (+ optional HTML briefing) |
+| `bmad-advanced-elicitation` | the just-produced draft + a method | in-place improvements to that draft |
+| `bmad-review` | path to a doc/diff/spec + optional lenses | findings JSON + markdown report |
+| `bmad-party-mode` | topic; optional `--party`/`--mode`; memlog; or interview notes to author a cast | keepsake HTML; `memories/<party>/.memlog.md`; optional custom TOML |
+| `bmad-customize` | skill name + the override | `_bmad/custom/<skill>.toml` or `<skill>.user.toml` |
+| `bmad-product-brief` | a relatively clear concept; optional recon / forged-idea | `brief.md` + `addendum.md` |
+| `bmad-prfaq` | product concept to stress-test; optional recon / forge | `prfaq-*.md` |
+| `bmad-prd` | create: brief/PRFAQ/brain dump; update: `prd.md` + change signal; validate: finished PRD | create/update: `prd.md`, `addendum.md`, `.memlog.md`; validate: HTML + `.md` |
+| `bmad-ux` | PRD or spec | `DESIGN.md`, `EXPERIENCE.md`, `.memlog.md` |
+| `bmad-spec` | any intent (brief, PRD, transcript, dump, folder); or existing `SPEC.md` + a change | `specs/spec-{slug}/SPEC.md` + companions; optional `stories.yaml` |
+| `bmad-architecture` | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` |
+| `bmad-create-epics-and-stories` | architecture + PRD/spec | epic files + stories |
+| `bmad-sprint-planning` | epics/stories, or existing `sprint-status.yaml` | PASS/CONCERNS/FAIL + `sprint-status.yaml` |
+| `bmad-project-context` | the repo / an observed mistake / current `AGENTS.md` | managed block in repo-root `AGENTS.md` |
+| `bmad-build` | sentence, issue, `SPEC.md`, or one story + the codebase | code + per-story implementation record |
+| `bmad-build-auto` | one bounded story + spec + codebase | same as build + terminal status |
+| `bmad-code-review` | a diff / branch / PR | findings + optional applied patches |
+| `bmad-checkpoint-preview` | a commit / branch / PR | guided walkthrough (usually conversation-only) |
+| `bmad-qa-generate-e2e-tests` | implemented feature/code (+ SPEC success conditions) | API / E2E test suite |
+| `bmad-correct-course` | change signal + current PRD / arch / epics / sprint | change proposal (then may rewrite those artifacts) |
+| `bmad-retrospective` | spec folder, `stories.yaml`, impl records, code | retro doc + action items + acceptance verdict |
+| `bmad-agent-*` | "talk to Mary/John/…" or a menu code | none — they dispatch the workflows above |

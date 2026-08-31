@@ -18,62 +18,68 @@ This is the "well-defined intent → spec → build" path from BMad's planning d
 
 ---
 
-## Sequence (artifacts on the right)
+## Sequence (`<< in` / `>> out`)
 
 ```
-YOU          SKILL                                ARTIFACTS WRITTEN
- |                |                                      |
+YOU          SKILL
+ |                |
  |-- "I know exactly what this CLI must do" ------------>|
- |                 bmad-help                             |  (none — "you are on spec + build")
- |                |                                      |
- |== LOCK WHAT ==========================================|
- |                 bmad-spec                             |
- |                |  input: a 2-page brain dump +        |
- |                |  desired --flags and exit codes      |
- |                |                                      |  specs/spec-invoicediff/SPEC.md
- |                |                                      |    Why / Capabilities / Constraints
- |                |                                      |    Non-goals / Success signal
- |                |                                      |  specs/spec-invoicediff/cli-flags.md
- |                |                                      |    (companion — tables live beside SPEC)
- |                |  + story breakdown                   |  specs/spec-invoicediff/stories.yaml
- |                |                                      |    1. parse PDF/CSV
- |                |                                      |    2. normalize SKUs
- |                |                                      |    3. diff + exit codes
- |                |                                      |    4. JSON reporter
- |                |                                      |
- |                 bmad-review                           |  review/spec-findings.json
- |                 lenses=edge-case,verification-gap     |  review/spec-findings.md
- |                |  (found: Unicode invoices,           |
- |                |   duplicate SKUs, $ vs cents)        |
- |                 bmad-spec   intent=update             |  SPEC.md rewritten in place
- |                |                                      |  (capability IDs stay stable)
- |                |                                      |
- |== THIN HOW (optional, but two parsers will diverge) ==|
- |                 bmad-architecture                     |  planning/ARCHITECTURE-SPINE.md
- |                |  invariants: one Invoice IR;         |
- |                |  parsers are adapters; money is      |
- |                |  integer cents; diff is pure         |
- |                |                                      |
- |                 bmad-project-context  setup           |  AGENTS.md
- |                |  go test ./..., never go test .      |
- |                |                                      |
- |== SHIP ONE STORY AT A TIME ===========================|
- |                 bmad-build   story=1-parse            |  cmd/invoicediff/, internal/parse/
- |                |                                      |  specs/.../impl/1-parse.md
- |                 bmad-code-review                      |  findings + patches
- |                 bmad-checkpoint-preview               |  (human walkthrough of the parser)
- |                |                                      |
- |                 bmad-build   story=2-normalize        |  internal/normalize/ + impl record
- |                 bmad-build   story=3-diff             |  internal/diff/ + impl record
- |                 bmad-build   story=4-json             |  internal/report/ + impl record
- |                |                                      |
- |                 bmad-qa-generate-e2e-tests            |  testdata/*.pdf, testdata/*.csv
- |                |                                      |  e2e/invoicediff_test.go
- |                |                                      |
- |                 bmad-retrospective                    |  implementation/retro-invoicediff.md
- |                |  verdict: ACCEPT — exit codes match  |  action: add golden-file corpus
- |                |  SPEC success signal                 |
- v                v                                      v
+ |                 bmad-help
+ |                      << in:  "Go CLI, flags and exit codes already known"
+ |                      >> out: (none — "you are on spec + build")
+ |
+ |== LOCK WHAT ==========================================
+ |                 bmad-spec  + story breakdown
+ |                      << in:  2-page brain dump + desired --flags + exit codes
+ |                      >> out: specs/spec-invoicediff/SPEC.md
+ |                      >> out: specs/spec-invoicediff/cli-flags.md  (companion)
+ |                      >> out: specs/spec-invoicediff/stories.yaml
+ |
+ |                 bmad-review  lenses=edge-case,verification-gap
+ |                      << in:  specs/spec-invoicediff/SPEC.md
+ |                      >> out: review/spec-findings.json + .md
+ |                 bmad-spec   intent=update
+ |                      << in:  existing SPEC.md + review findings
+ |                      >> out: SPEC.md rewritten in place (stable capability IDs)
+ |
+ |== THIN HOW (optional, but two parsers will diverge) ==
+ |                 bmad-architecture
+ |                      << in:  SPEC.md (two parsers will otherwise diverge)
+ |                      >> out: planning/ARCHITECTURE-SPINE.md
+ |
+ |                 bmad-project-context  setup
+ |                      << in:  the Go repo (go test ./..., never go test .)
+ |                      >> out: AGENTS.md
+ |
+ |== SHIP ONE STORY AT A TIME ===========================
+ |                 bmad-build   story=1-parse
+ |                      << in:  stories.yaml #1 + SPEC.md + empty tree
+ |                      >> out: cmd/invoicediff/, internal/parse/, impl/1-parse.md
+ |                 bmad-code-review
+ |                      << in:  the parser diff
+ |                      >> out: findings + patches
+ |                 bmad-checkpoint-preview
+ |                      << in:  the parser commit / PR
+ |                      >> out: walkthrough (usually no file)
+ |
+ |                 bmad-build   story=2-normalize
+ |                      << in:  stories.yaml #2 + SPEC.md + parser code
+ |                      >> out: internal/normalize/ + impl record
+ |                 bmad-build   story=3-diff
+ |                      << in:  stories.yaml #3 + SPEC.md + normalize code
+ |                      >> out: internal/diff/ + impl record
+ |                 bmad-build   story=4-json
+ |                      << in:  stories.yaml #4 + SPEC.md + diff code
+ |                      >> out: internal/report/ + impl record
+ |
+ |                 bmad-qa-generate-e2e-tests
+ |                      << in:  implemented CLI + SPEC success signal
+ |                      >> out: testdata/*.pdf, testdata/*.csv, e2e/invoicediff_test.go
+ |
+ |                 bmad-retrospective
+ |                      << in:  spec folder + stories.yaml + impl records + code
+ |                      >> out: implementation/retro-invoicediff.md + ACCEPT verdict
+ v                v
 ```
 
 ---

@@ -16,88 +16,97 @@ Skipped: `bmad-brainstorming` (they already have one idea), `bmad-product-brief`
 
 ---
 
-## Sequence (artifacts on the right)
+## Sequence (`<< in` / `>> out`)
 
 ```
-YOU          SKILL / ROOM                         ARTIFACTS WRITTEN
- |                |                                      |
- |                 bmad-help                             |  (none — "forge it, it might die")
- |                |                                      |
- |== WILL THIS IDEA SURVIVE? ============================|
- |                 bmad-forge-idea                       |  forge/forge-report.html
- |                |  personas: city CIO, NOAA hydrologist|  forge/forged-idea.md
- |                |  insurance counsel, neighborhood lead|
- |                |  HARDENS — but only as "advisory     |
- |                |  nowcast + human confirm", not a     |
- |                |  guaranteed warning system.          |
- |                |                                      |
- |== DECISION-GRADE RESEARCH ============================|
- |                 bmad-deep-recon  type=academic-lit    |  research/lit-flood-nowcast.md
- |                 bmad-deep-recon  type=domain          |  research/domain-tide-datums.md
- |                 bmad-deep-recon  type=technical       |  research/technical-sensor-mesh.md
- |                 bmad-deep-recon  type=user-voice      |  research/user-voice-flooded-wards.md
- |                 bmad-deep-recon  type=competitive     |  research/competitive-fema-ibwc.md
- |                 bmad-deep-recon  shape=select         |  research/select-alert-channel.md
- |                |  (SMS vs push vs NOAA weather radio) |  (+ optional HTML briefings)
- |                |                                      |
- |== PARTY: LIABILITY + ETHICS ==========================|
- |                 bmad-party-mode                       |
- |                 --party installed --mode subagent     |
- |                |                                      |
- |                |  Mary   : false-negative rates       |
- |                |  John   : city will not fund a       |
- |                |           product that implies 911   |
- |                |  Winston: no ML black box in the     |
- |                |           alert path; deterministic  |
- |                |           thresholds only            |
- |                |  Sally  : alert copy must not sound  |
- |                |           like an evacuation order   |
- |                |  Amelia : sensor firmware OTA is a   |
- |                |           separate trust boundary    |
- |                |                                      |
- |                |  UNRESOLVED CLASH (correct):         |
- |                |  John wants a disclaimer-heavy UX;   |
- |                |  Sally says that trains people to    |
- |                |  ignore alerts. They do not hug.     |
- |                |                                      |  party-mode/memories/installed/.memlog.md
- |                |                                      |  party-mode/2026-03-12-harborwatch-liability.html
- |                |                                      |
- |== WORKING BACKWARDS, NOT A GENTLE BRIEF ==============|
- |                 bmad-prfaq                            |  planning/prfaq-harborwatch.md
- |                |  press release written as if the     |
- |                |  city launched yesterday; FAQ kills  |
- |                |  "we predict floods" language        |
- |                |                                      |
- |                 bmad-prd   intent=create              |  planning/prd.md
- |                |           reads PRFAQ + recon        |  planning/addendum.md
- |                |                                      |  planning/.memlog.md
- |                 bmad-review                           |  review/prd-findings.json
- |                 lenses=adversarial,verification-gap   |  review/prd-findings.md
- |                 bmad-prd   intent=validate            |  planning/prd-validation.html
- |                |                                      |  planning/prd-validation.md
- |                |                                      |
- |== HOW, THEN WHAT =====================================|
- |                 bmad-architecture                     |  planning/ARCHITECTURE-SPINE.md
- |                |  invariants: deterministic threshold |
- |                |  engine; SMS provider swappable;     |
- |                |  no model in the page-out path       |
- |                |                                      |
- |                 bmad-spec   epic=sms-nowcast          |  specs/spec-sms-nowcast/SPEC.md
- |                |                                      |  specs/spec-sms-nowcast/stories.yaml
- |                 bmad-create-epics-and-stories         |  planning/epics/*.md
- |                 bmad-sprint-planning                  |  implementation/sprint-status.yaml
- |                |                                      |  readiness: CONCERNS
- |                |  (sensor hardware lead time)         |  (gate still proceeds with noted risk)
- |                |                                      |
- |                 bmad-project-context  setup           |  AGENTS.md
- |                |  pitfalls: never page on estimated   |
- |                |  tide alone; always attach station id|
- |                |                                      |
- |== SHIP (human-gated — life safety) ===================|
- |                 bmad-build          (per story)       |  code + impl records
- |                 bmad-qa-generate-e2e-tests            |  tests/e2e/alert-pipeline.spec.ts
- |                 bmad-retrospective                    |  implementation/retro-sms-nowcast.md
- v                v                                      v
+YOU          SKILL / ROOM
+ |                |
+ |                 bmad-help
+ |                      << in:  "city flood SMS alerts" + empty project
+ |                      >> out: (none — "forge it, it might die")
+ |
+ |== WILL THIS IDEA SURVIVE? ============================
+ |                 bmad-forge-idea
+ |                      << in:  the founder's attached idea
+ |                      >> out: forge/forge-report.html
+ |                      >> out: forge/forged-idea.md
+ |                 HARDENS — but only as "advisory nowcast +
+ |                 human confirm", not a guaranteed warning system.
+ |
+ |== DECISION-GRADE RESEARCH ============================
+ |                 bmad-deep-recon  type=academic-lit
+ |                      << in:  flood nowcast literature question
+ |                      >> out: research/lit-flood-nowcast.md
+ |                 bmad-deep-recon  type=domain
+ |                      << in:  tide datums / floodplain terms
+ |                      >> out: research/domain-tide-datums.md
+ |                 bmad-deep-recon  type=technical
+ |                      << in:  cheap sensor mesh + SMS page-out
+ |                      >> out: research/technical-sensor-mesh.md
+ |                 bmad-deep-recon  type=user-voice
+ |                      << in:  residents of flooded wards
+ |                      >> out: research/user-voice-flooded-wards.md
+ |                 bmad-deep-recon  type=competitive
+ |                      << in:  FEMA / IBWC / city siren apps
+ |                      >> out: research/competitive-fema-ibwc.md
+ |                 bmad-deep-recon  shape=select
+ |                      << in:  SMS vs push vs NOAA weather radio
+ |                      >> out: research/select-alert-channel.md
+ |
+ |== PARTY: LIABILITY + ETHICS ==========================
+ |                 bmad-party-mode  --party installed --mode subagent
+ |                      << in:  "can we ship a warning that isn't 911?"
+ |                      << in:  forged-idea.md + recon/*.md
+ |                      >> out: party-mode/memories/installed/.memlog.md
+ |                      >> out: party-mode/2026-03-12-harborwatch-liability.html
+ |                 UNRESOLVED CLASH (correct): John wants disclaimer-
+ |                 heavy UX; Sally says that trains people to ignore alerts.
+ |
+ |== WORKING BACKWARDS, NOT A GENTLE BRIEF ==============
+ |                 bmad-prfaq
+ |                      << in:  hardened idea + recon + party takeaway
+ |                      >> out: planning/prfaq-harborwatch.md
+ |
+ |                 bmad-prd   intent=create
+ |                      << in:  prfaq-harborwatch.md + recon/*.md
+ |                      >> out: planning/prd.md, addendum.md, .memlog.md
+ |                 bmad-review  lenses=adversarial,verification-gap
+ |                      << in:  planning/prd.md
+ |                      >> out: review/prd-findings.json + .md
+ |                 bmad-prd   intent=validate
+ |                      << in:  finished prd.md + checklist
+ |                      >> out: planning/prd-validation.html + .md
+ |
+ |== HOW, THEN WHAT =====================================
+ |                 bmad-architecture
+ |                      << in:  prd.md (no UX — SMS-first)
+ |                      >> out: planning/ARCHITECTURE-SPINE.md
+ |
+ |                 bmad-spec   epic=sms-nowcast
+ |                      << in:  prd.md + spine (condensed)
+ |                      >> out: specs/spec-sms-nowcast/SPEC.md + stories.yaml
+ |                 bmad-create-epics-and-stories
+ |                      << in:  spine + prd.md
+ |                      >> out: planning/epics/*.md
+ |                 bmad-sprint-planning
+ |                      << in:  epics + stories
+ |                      >> out: sprint-status.yaml + readiness CONCERNS
+ |
+ |                 bmad-project-context  setup
+ |                      << in:  the repo; pitfall: never page on estimated tide
+ |                      >> out: AGENTS.md
+ |
+ |== SHIP (human-gated — life safety) ===================
+ |                 bmad-build          (per story)
+ |                      << in:  one story + SPEC.md + codebase
+ |                      >> out: code + impl records
+ |                 bmad-qa-generate-e2e-tests
+ |                      << in:  implemented alert pipeline + SPEC success signal
+ |                      >> out: tests/e2e/alert-pipeline.spec.ts
+ |                 bmad-retrospective
+ |                      << in:  spec-sms-nowcast/ + stories.yaml + impl + code
+ |                      >> out: implementation/retro-sms-nowcast.md + verdict
+ v                v
 ```
 
 ---
