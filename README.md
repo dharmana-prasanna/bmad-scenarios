@@ -9,6 +9,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 | File | What it is |
 |---|---|
 | [`install-bmad-method.md`](install-bmad-method.md) | Prerequisites, installer commands, Cursor/Claude Code, verify, update |
+| [`team-enablement-plan.md`](team-enablement-plan.md) | Demo day + how the team works on brownfield (BMad not on yet) and greenfield |
 | [`bmad-skill-decision-diagrams.md`](bmad-skill-decision-diagrams.md) | Master decision tree, lifecycle sequences, agent dispatch map, recommended models, deprecated-shim map, skill → input/output cheat sheet |
 | [`use-cases/README.md`](use-cases/README.md) | Index of the seven scenarios |
 
