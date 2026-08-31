@@ -1,6 +1,6 @@
 # End-to-end use cases
 
-Six projects that walk BMad Method from a messy question to shipped work. Each file is a standalone ASCII sequence with **what each skill reads** and **what it writes**.
+Seven projects that walk BMad Method from a messy question to shipped work. Each file is a standalone ASCII sequence with **what each skill reads** and **what it writes**.
 
 Skill catalog, “when to use which,” and **recommended models** live in [`../bmad-skill-decision-diagrams.md`](../bmad-skill-decision-diagrams.md#2a-recommended-models-agents-and-skills).
 
@@ -10,8 +10,9 @@ Skill catalog, “when to use which,” and **recommended models** live in [`../
 | [02](02-greenfield-harborwatch.md) | **HarborWatch** — coastal flood early-warning | Greenfield | Research-heavy, civic, PRFAQ instead of a gentle brief | Yes (ethics / liability roundtable) |
 | [03](03-greenfield-invoicediff-cli.md) | **InvoiceDiff** — CLI that diffs vendor invoices | Greenfield | Epic-sized, spec-first; skip PRD/UX/sprint theater | No |
 | [04](04-brownfield-northwind-sso.md) | **Northwind Shop** — add SSO to existing Next.js commerce | Brownfield | Join a live repo, teach agents the house rules, ship one epic | No |
-| [05](05-brownfield-ledgerlite-course-correction.md) | **LedgerLite** — mid-sprint Mongo → Postgres + GDPR | Brownfield | Plan explodes; `bmad-correct-course` reroutes the train | Yes (data-residency fight) |
+| [05](05-brownfield-ledgerlite-course-correction.md) | **LedgerLite** — mid-sprint Mongo → Postgres + GDPR | Brownfield | You walk in *at* the bomb; `bmad-correct-course` first | Yes (data-residency fight) |
 | [06](06-party-mode-atlas-health.md) | **Atlas Health** — build vs buy vs partner video visits | Mixed | Dedicated `bmad-party-mode` deep dive: custom focus group, two rooms, memory, keepsake | **Primary** |
+| [07](07-brownfield-mealplan-course-correct.md) | **MealPlan AI year 2** — sharing ships, then Instacart dies | Brownfield | Same shape as 01; `bmad-correct-course` only *after* an epic shipped | Yes (late, after epic 2) |
 
 ## How to read a sequence
 

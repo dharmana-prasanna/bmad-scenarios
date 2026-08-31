@@ -7,7 +7,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`).
 
 Running example: **MealPlan AI** — a family meal-planning app that turns pantry + dietary constraints into a weekly plan and grocery list.
 
-**End-to-end projects (`<< in` / `>> out` on every arrow):** see [`use-cases/README.md`](use-cases/README.md). Six files — three greenfield, two brownfield, one party-mode deep dive.
+**End-to-end projects (`<< in` / `>> out` on every arrow):** see [`use-cases/README.md`](use-cases/README.md). Seven files — three greenfield, three brownfield, one party-mode deep dive.
 
 | # | Project | Field |
 |---|---|---|
@@ -17,6 +17,7 @@ Running example: **MealPlan AI** — a family meal-planning app that turns pantr
 | [04](use-cases/04-brownfield-northwind-sso.md) | Northwind Shop SSO | Brownfield |
 | [05](use-cases/05-brownfield-ledgerlite-course-correction.md) | LedgerLite store cutover | Brownfield + correct-course |
 | [06](use-cases/06-party-mode-atlas-health.md) | Atlas Health video visits | **Party mode** showcase |
+| [07](use-cases/07-brownfield-mealplan-course-correct.md) | MealPlan AI year 2 | Brownfield + late course-correct |
 
 ---
 

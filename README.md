@@ -1,6 +1,6 @@
 # BMad Method — skill decision diagrams and scenarios
 
-ASCII trees and sequence diagrams for **when to use which [BMad Method](https://docs.bmad-method.org/) skill**, plus six end-to-end project scenarios (greenfield and brownfield).
+ASCII trees and sequence diagrams for **when to use which [BMad Method](https://docs.bmad-method.org/) skill**, plus seven end-to-end project scenarios (greenfield and brownfield).
 
 Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skills: 29 current + 20 deprecated shims.**
 
@@ -9,7 +9,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 | File | What it is |
 |---|---|
 | [`bmad-skill-decision-diagrams.md`](bmad-skill-decision-diagrams.md) | Master decision tree, lifecycle sequences, agent dispatch map, recommended models, deprecated-shim map, skill → input/output cheat sheet |
-| [`use-cases/README.md`](use-cases/README.md) | Index of the six scenarios |
+| [`use-cases/README.md`](use-cases/README.md) | Index of the seven scenarios |
 
 ## Scenarios
 
@@ -21,6 +21,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 | [04](use-cases/04-brownfield-northwind-sso.md) | **Northwind Shop** — add SSO to existing Next.js commerce | Brownfield |
 | [05](use-cases/05-brownfield-ledgerlite-course-correction.md) | **LedgerLite** — mid-sprint Mongo → Postgres + GDPR | Brownfield + correct-course |
 | [06](use-cases/06-party-mode-atlas-health.md) | **Atlas Health** — build vs buy vs partner video visits | `bmad-party-mode` deep dive |
+| [07](use-cases/07-brownfield-mealplan-course-correct.md) | **MealPlan AI year 2** — sharing ships, then Instacart dies | Brownfield + late course-correct |
 
 ## How to read a sequence
 

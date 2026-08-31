@@ -2,7 +2,7 @@
 
 **Field:** brownfield  
 **Size:** project already in flight; one epic detonates  
-**Why this path:** significant change during sprint execution — the defining job of `bmad-correct-course`.
+**Why this path:** significant change during sprint execution — the defining job of `bmad-correct-course`. You walk in *at* the bomb. For the same skill after a full brownfield path has already shipped an epic, see [07](07-brownfield-mealplan-course-correct.md).
 
 **LedgerLite** is a 3-year-old Node + MongoDB bookkeeping SaaS for EU freelancers. Epic 4 ("multi-currency journals") is in week 2 of 3. Two stories are merged. Legal then drops a bomb: a German customer’s DPA requires **Postgres in `eu-central-1`**, no document store, and a 30-day deletion SLA. Mongo-on-Atlas-US is now a ship blocker. The team also disagrees on whether to pause the epic or dual-write.
 

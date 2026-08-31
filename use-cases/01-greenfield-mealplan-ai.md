@@ -12,7 +12,7 @@ A two-founder team wants a family meal-planning app: pantry + dietary constraint
 
 Used: `bmad-help`, `bmad-brainstorming`, `bmad-forge-idea`, `bmad-deep-recon`, `bmad-party-mode`, `bmad-product-brief`, `bmad-prd`, `bmad-advanced-elicitation`, `bmad-review`, `bmad-ux`, `bmad-architecture`, `bmad-spec`, `bmad-create-epics-and-stories`, `bmad-sprint-planning`, `bmad-build`, `bmad-code-review`, `bmad-checkpoint-preview`, `bmad-qa-generate-e2e-tests`, `bmad-build-auto`, `bmad-retrospective`, `bmad-project-context`, `bmad-customize`.
 
-Skipped: `bmad-prfaq` (founders already sure of the concept — brief is enough), `bmad-correct-course` (no mid-flight explosion). Agents optional: any `bmad-agent-*` can sit on top and dispatch the same workflows.
+Skipped: `bmad-prfaq` (founders already sure of the concept — brief is enough), `bmad-correct-course` (no mid-flight explosion — that is [07](07-brownfield-mealplan-course-correct.md), year 2 of this product). Agents optional: any `bmad-agent-*` can sit on top and dispatch the same workflows.
 
 ---
 
