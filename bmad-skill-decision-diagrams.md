@@ -305,6 +305,146 @@ bmad-agent-dev (Amelia)
 
 ---
 
+## 2a. Recommended models (agents and skills)
+
+BMad does **not** pin a model SKU to an agent. Official guidance is tier-and-role, not “always use X.” The table below is a practical mapping as of 2026. Swap in whatever frontier / workhorse / fast models your harness actually offers.
+
+**Official BMad rules (not ours):**
+
+- Planning in [web bundles](https://github.com/bmad-code-org/BMAD-METHOD) (ChatGPT Custom GPTs / Gemini Gems): use the **best model available** in that subscription, then bring artifacts into the IDE for implementation.
+- `bmad-code-review` after a build: start a **fresh chat on a different LLM** than the one that implemented the story ([first-project tutorial](https://bmad-code-org-bmad-method-6.mintlify.app/tutorials/first-project); also [Review a Change](https://docs.bmad-method.org/build/review-a-change/) — custom lenses on other models are worth doing).
+- `bmad-party-mode`: match the model to the round — **quick for banter, stronger for deep work**; a per-member `model` in customize.toml is used when set; `--model` pins everyone. `--mode subagent` favors faster cheaper models for spawned voices, but independence is the point.
+- `bmad-deep-recon`: lead stays on the **strongest** model; researcher subagents at most one capable tier down; **judgment never on the smallest tier**.
+- Built-in review layers inside `bmad-build`: keep review subagents at the **same capability as the current session** — do not silently drop them to a cheap model.
+
+**Tiers used below**
+
+| Tier | Job | Typical 2026 families (examples, not a lock-in) |
+|---|---|---|
+| **Frontier** | Hard reasoning, architecture, adversarial review, course-correct | Claude Opus 4.x (thinking), GPT-5.x, Gemini 2.5/3 Pro |
+| **Workhorse** | Long structured docs, most implementation | Claude Sonnet 4.x, GPT-5.x mid, Gemini Pro, Cursor Composer |
+| **Fast** | Banter, status, mechanical extract, later `bmad-build-auto` | Claude Haiku / fast Sonnet, Gemini Flash, GPT mini |
+
+### Named agents
+
+```
+Mary     bmad-agent-analyst
+         WHY: synthesis + research judgment + long context
+         USE:  Frontier for forge / recon / PRFAQ; Workhorse for brief + project-context
+         AVOID: Fast models on deep-recon judgment or select-shape decisions
+         PIN:   optional party member model = frontier when she is in a hard room
+
+John     bmad-agent-pm
+         WHY: long consistent PRDs; change-signal updates; readiness gates
+         USE:  Frontier when the PRD is the org contract; Workhorse for CE / IR
+         AVOID: Chatty fast models (they pad PRDs and invent requirements)
+         PIN:   frontier for correct-course (CC) — blast radius is expensive
+
+Winston  bmad-agent-architect
+         WHY: a wrong invariant poisons every later story
+         USE:  Frontier, always, for CA; Workhorse only to ratify a tiny brownfield spine
+         AVOID: Fast / “auto” coding models — they optimize for code, not invariants
+         PIN:   frontier in party mode; he is the one who should not fold
+
+Sally    bmad-agent-ux-designer
+         WHY: taste + edge-case rigor; often needs to see UI
+         USE:  Workhorse with vision if you have mocks; Frontier when UX is the product
+         AVOID: Pure-code models with weak product taste
+         PIN:   workhorse+vision; frontier if she is fighting Winston/Amelia on v1 scope
+
+Amelia   bmad-agent-dev
+         WHY: implementation, then a second pair of eyes
+         USE:  Workhorse (strong coding) for BD / QA / SP / ER
+               Frontier for the first story of a new pattern, or a scary domain
+         AVOID: Same model for BD and the later CR pass
+               Fast models on auth, money, or life-safety stories
+         PIN:   workhorse for BD; a *different family* for CR
+```
+
+| Agent | Default pick | Upgrade to Frontier when | Use a different model for |
+|---|---|---|---|
+| Mary | Frontier | Always for recon / forge / PRFAQ | — |
+| John | Workhorse | Org-signed PRD, `bmad-correct-course` | — |
+| Winston | Frontier | Always for `bmad-architecture` | — |
+| Sally | Workhorse + vision | UI is the product, or a scope fight | — |
+| Amelia | Workhorse coding | First story of a new pattern; regulated / money / auth | `bmad-code-review` (other family) |
+
+### Workflow skills (when you invoke them directly)
+
+```
+THINK
+  bmad-help                    Fast or Workhorse — routing, not creation
+  bmad-brainstorming           Workhorse (creative). Frontier if the idea space is high-stakes
+  bmad-forge-idea              Frontier — it must be willing to kill the idea
+  bmad-deep-recon              Frontier lead; Workhorse researchers; never Fast for judgment
+  bmad-advanced-elicitation    Frontier (red team / pre-mortem)
+  bmad-review                  Different family than the author of the artifact
+  bmad-party-mode              session: one Workhorse/Frontier
+                               auto/subagent: Fast for banter, Frontier for hard rounds
+                               focus groups: --mode subagent + Workhorse per patient
+  bmad-customize               Workhorse — it writes TOML, not product
+
+PLAN
+  bmad-product-brief           Workhorse
+  bmad-prfaq                   Frontier (Working Backwards is a gauntlet)
+  bmad-prd                     Frontier for create/validate; Workhorse for a small update
+  bmad-ux                      Workhorse + vision; Frontier if UX is the product
+  bmad-spec                    Frontier — SPEC.md is the machine contract Build reads
+  bmad-architecture            Frontier
+  bmad-create-epics-and-stories  Workhorse (needs the spine + PRD already right)
+  bmad-sprint-planning         Workhorse; Frontier if the gate is FAIL/CONCERNS
+  bmad-project-context         Workhorse — must actually run the repo commands
+
+SHIP
+  bmad-build                   Workhorse coding; Frontier for story 1 of a new spine
+  bmad-build-auto              Workhorse or Fast — only after a human Build proved the pattern
+  bmad-code-review             Other family than the builder; Frontier if you can afford it
+  bmad-checkpoint-preview      Workhorse
+  bmad-qa-generate-e2e-tests   Workhorse coding
+  bmad-correct-course          Frontier
+  bmad-retrospective           Workhorse; Frontier if the verdict is contested
+```
+
+### How to pin a model (when your harness allows it)
+
+```
+Party member (spawned voice)
+  _bmad/custom/bmad-party-mode.user.toml
+  [[workflow.party_members]]
+  code  = "winston"
+  model = "<your-frontier-id>"     # session --model overrides this
+
+Deep recon researchers
+  _bmad/custom/bmad-deep-recon.toml
+  subagent_models = ["<workhorse-id>", "<fast-id>"]
+  # lead stays on the session model (keep that one Frontier)
+
+Code-review extra lens on another LLM
+  _bmad/custom/bmad-code-review.toml
+  [[workflow.review_layers]]
+  id = "blind-hunter-other-llm"
+  instruction = """run <other-model> on {diff_file} …"""
+
+Cursor / Claude Code
+  pick the model in the session UI before invoking the agent
+  then start a *new* session on a different model for CR
+```
+
+```
+CHEAPEST MISTAKE
+  Fast model writes ARCHITECTURE-SPINE.md or SPEC.md
+  → every later Build inherits the error
+
+SECOND CHEAPEST
+  Same model implements and reviews
+  → it grades its own homework
+
+RIGHT SHAPE
+  Frontier thinks  →  Workhorse builds  →  other-family reviews
+```
+
+---
+
 ## 3. Size the work first — then pick a path
 
 ```
@@ -863,14 +1003,16 @@ bmad-party-mode                   bmad-create-epics-and-stories        bmad-retr
 bmad-customize                    bmad-sprint-planning
                                   bmad-project-context
 
-BMM AGENTS (5)
-──────────────
-bmad-agent-analyst      Mary
-bmad-agent-pm           John
-bmad-agent-architect    Winston
-bmad-agent-ux-designer  Sally
-bmad-agent-dev          Amelia
+BMM AGENTS (5)                          default model tier
+──────────────                          ──────────────────
+bmad-agent-analyst      Mary            Frontier (recon/forge/PRFAQ)
+bmad-agent-pm           John            Workhorse; Frontier for org PRD / CC
+bmad-agent-architect    Winston         Frontier
+bmad-agent-ux-designer  Sally           Workhorse + vision
+bmad-agent-dev          Amelia          Workhorse coding; other family for CR
 ```
+
+See [§2a](#2a-recommended-models-agents-and-skills) for the full mapping.
 
 ---
 

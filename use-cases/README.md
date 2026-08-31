@@ -2,7 +2,7 @@
 
 Six projects that walk BMad Method from a messy question to shipped work. Each file is a standalone ASCII sequence with **what each skill reads** and **what it writes**.
 
-Skill catalog and “when to use which” live in [`../bmad-skill-decision-diagrams.md`](../bmad-skill-decision-diagrams.md).
+Skill catalog, “when to use which,” and **recommended models** live in [`../bmad-skill-decision-diagrams.md`](../bmad-skill-decision-diagrams.md#2a-recommended-models-agents-and-skills).
 
 | # | Project | Field | Why it exists | Party mode? |
 |---|---|---|---|---|

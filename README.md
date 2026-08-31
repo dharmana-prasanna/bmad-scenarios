@@ -8,7 +8,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 
 | File | What it is |
 |---|---|
-| [`bmad-skill-decision-diagrams.md`](bmad-skill-decision-diagrams.md) | Master decision tree, lifecycle sequences, agent dispatch map, deprecated-shim map, skill → artifact cheat sheet |
+| [`bmad-skill-decision-diagrams.md`](bmad-skill-decision-diagrams.md) | Master decision tree, lifecycle sequences, agent dispatch map, recommended models, deprecated-shim map, skill → input/output cheat sheet |
 | [`use-cases/README.md`](use-cases/README.md) | Index of the six scenarios |
 
 ## Scenarios
