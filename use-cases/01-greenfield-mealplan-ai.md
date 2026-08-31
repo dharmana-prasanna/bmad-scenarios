@@ -95,13 +95,12 @@ YOU          SKILL / ROOM
  |
  |-- validate against checklist ------------------------>|
  |                 bmad-prd   intent=validate
- |                      << in:  finished prd.md (+ addendum.md if present)
- |                      << in:  rubric shipped with the skill:
- |                              assets/prd-validation-checklist.md
- |                              (override via _bmad/custom/bmad-prd.toml
- |                               if the org has its own quality bar)
- |                      >> out: planning/prd-validation.html
- |                      >> out: planning/prd-validation.md
+ |                      << in:  finished prd.md          ← you / the create run
+ |                      << in:  shipped rubric           ← bmad-prd, unless the org overrode it
+ |                      >> out: validation-report.html + .md
+ |                 shipped rubric = assets/prd-validation-checklist.md
+ |                 org override   = _bmad/custom/bmad-prd.toml
+ |                 (addendum.md is also read if present)
  |
  |-- UI is the product --------------------------------->|
  |                 bmad-ux
