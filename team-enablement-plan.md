@@ -9,8 +9,6 @@ A plan you can run with your team using **this repo as the teaching kit**. It co
 
 You do not “BMad the whole legacy system.” You install it, teach agents the house rules, and use it on the **next** change.
 
-**Only have 30 minutes?** Run [`30-minute-team-intro.md`](30-minute-team-intro.md) instead of the 90-minute demo below. Come back here for the week-by-week playbooks.
-
 ---
 
 ## What “done” looks like
