@@ -114,7 +114,9 @@ PLAN
   bmad-architecture
       << in:  PRD or spec; UX if present
               brownfield: the existing codebase
-      >> out: ARCHITECTURE-SPINE.md
+              update: existing spine + its .memlog.md
+      >> out: ARCHITECTURE-SPINE.md   (AD-n = the ADRs)
+              .memlog.md             (rationale)
 
   bmad-create-epics-and-stories
       << in:  architecture + PRD/spec
@@ -1153,7 +1155,7 @@ deprecated shims (20)
 | `bmad-prd` | Create, update, or validate a Product Requirements Document | create: brief/PRFAQ/brain dump; update: `prd.md` + change signal; validate: finished PRD | `prd.md` / validation HTML |
 | `bmad-ux` | UI/UX is a primary surface and needs written design | PRD or spec | `DESIGN.md`, `EXPERIENCE.md` |
 | `bmad-spec` | Lock WHAT into a short machine contract Build can read | any intent (brief, PRD, transcript, dump, folder) | `SPEC.md` + companions, optional `stories.yaml` |
-| `bmad-architecture` | Lock HOW so independently built parts stay consistent | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` |
+| `bmad-architecture` | Lock HOW so independently built parts stay consistent | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` (`AD-n` ADRs) + `.memlog.md` |
 | `bmad-create-epics-and-stories` | Slice a PRD/architecture into an implementation backlog | architecture + PRD/spec | epic + story files |
 | `bmad-sprint-planning` | Gate readiness and/or track/repair sprint status | epics/stories, or existing `sprint-status.yaml` | verdict + `sprint-status.yaml` |
 | `bmad-project-context` | Teach agents this repo (commands, policy, pitfalls) | the repo / an observed mistake / current `AGENTS.md` | `AGENTS.md` managed block |

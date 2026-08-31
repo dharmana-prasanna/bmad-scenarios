@@ -44,7 +44,7 @@ Conversation-only skills (`bmad-help`, `bmad-advanced-elicitation`, `bmad-checkp
 | `bmad-prd` | create: brief/PRFAQ/brain dump; update: `prd.md` + change signal; validate: finished PRD | create/update: `prd.md`, `addendum.md`, `.memlog.md`; validate: HTML + `.md` |
 | `bmad-ux` | PRD or spec | `DESIGN.md`, `EXPERIENCE.md`, `.memlog.md` |
 | `bmad-spec` | any intent (brief, PRD, transcript, dump, folder); or existing `SPEC.md` + a change | `specs/spec-{slug}/SPEC.md` + companions; optional `stories.yaml` |
-| `bmad-architecture` | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` |
+| `bmad-architecture` | PRD or spec; UX if present; brownfield: the codebase | `ARCHITECTURE-SPINE.md` (`AD-n` blocks) + `.memlog.md` |
 | `bmad-create-epics-and-stories` | architecture + PRD/spec | epic files + stories |
 | `bmad-sprint-planning` | epics/stories, or existing `sprint-status.yaml` | PASS/CONCERNS/FAIL + `sprint-status.yaml` |
 | `bmad-project-context` | the repo / an observed mistake / current `AGENTS.md` | managed block in repo-root `AGENTS.md` |

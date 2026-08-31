@@ -109,14 +109,31 @@ YOU          SKILL
  |                      >> out: planning/EXPERIENCE.md
  |                      >> out: planning/.memlog.md
  |
- |== RATIFY HOW, THEN LOCK WHAT =========================
- |                 bmad-architecture
+ |== RATIFY HOW + GENERATE ADRs =========================
+ |                 bmad-architecture   intent=create
  |                      << in:  prd.md + DESIGN.md + the existing Rails codebase
+ |                      << in:  Coaching path (default) — you choose the
+ |                              load-bearing calls; Fast path tags [ASSUMPTION]
  |                      >> out: planning/ARCHITECTURE-SPINE.md
- |                 BROWNFIELD: ratifies Shipment / Stop / Carrier as the
- |                 only source of truth; portal is a new Next.js app on
- |                 the existing API; no second booking table; billing job
- |                 stays untouched.
+ |                              (paradigm + AD-1…AD-n + conventions + seed)
+ |                      >> out: planning/architecture/.memlog.md
+ |                              (rationale — not copied into the AD blocks)
+ |                 HOW ADRs ARE MADE (no separate bmad-adr skill):
+ |                 1. Skill appends each call to the memlog
+ |                    (what it binds + the divergence it prevents).
+ |                 2. Finalize *distills* survivors into AD-n blocks
+ |                    (stable ID, Binds / Prevents / Rule).
+ |                 3. [ADOPTED] = already true in the living TMS.
+ |                 BROWNFIELD ADs this run (IDs stay forever):
+ |                   AD-1 [ADOPTED] Shipment / Stop / Carrier are the
+ |                        only booking source of truth
+ |                   AD-2 [ADOPTED] pro_number is the customer-facing id
+ |                   AD-3          portal is a Next.js app on the existing
+ |                        API — no second booking table
+ |                   AD-4 [ADOPTED] billing Sidekiq job is out of bounds
+ |                 Optional at Finalize: a human-facing deck/HTML if you
+ |                 asked for one. That is a rendering. The ADRs are the
+ |                 AD-n blocks. Specs cite those IDs.
  |
  |                 bmad-spec  + story breakdown
  |                      << in:  prd.md + UX + spine + brief (v1 scope)
@@ -227,13 +244,20 @@ YOU          SKILL
  |                      >> out: planning/DESIGN.md
  |                      >> out: planning/EXPERIENCE.md
  |
- |                 bmad-architecture
+ |                 bmad-architecture   intent=update
+ |                      << in:  existing ARCHITECTURE-SPINE.md + its .memlog.md
  |                      << in:  updated prd.md + DESIGN.md + living codebase
- |                      << in:  (includes shipped portal + existing Appointment)
- |                      >> out: planning/ARCHITECTURE-SPINE.md
- |                 BROWNFIELD: ratifies Appointment as already-in-TMS;
- |                 portal calls the same API; epic 1 book-load stays the
- |                 only create-Shipment path; confirm waits on appointment.
+ |                      << in:  (shipped portal + existing Appointment)
+ |                      >> out: planning/ARCHITECTURE-SPINE.md  (re-distilled)
+ |                      >> out: planning/architecture/.memlog.md (new lines appended)
+ |                 Resume the memlog. Keep AD-1…AD-4. Never renumber.
+ |                 New ADR only:
+ |                   AD-5 [ADOPTED] Appointment is already-in-TMS;
+ |                        portal calls the same API; book-load (AD-3)
+ |                        stays the only create-Shipment path;
+ |                        confirm waits on a dock window.
+ |                 Amend a Rule in place if AD-3's wording must mention
+ |                 confirm-vs-book; do not invent AD-1b.
  |
  |                 bmad-spec  + story breakdown
  |                      << in:  updated prd + UX + spine + updated brief
@@ -304,11 +328,12 @@ cargolane/
 │   ├── prd-validation.md
 │   ├── DESIGN.md
 │   ├── EXPERIENCE.md
-│   ├── ARCHITECTURE-SPINE.md              ← Appointment ratified, not invented
+│   ├── ARCHITECTURE-SPINE.md              ← AD-1…AD-4, then AD-5 (IDs stable)
+│   ├── architecture/.memlog.md            ← ADR rationale (append-only)
 │   ├── epics/
 │   │   ├── epic-1-shipper-book-and-track.md   ← ACCEPTed — do not reopen
 │   │   └── epic-2-shipper-appointments.md
-│   └── .memlog.md
+│   └── .memlog.md                         ← PRD run memlog (separate)
 ├── {output}/specs/spec-shipper-book-and-track/
 │   ├── SPEC.md
 │   ├── stories.yaml
@@ -340,7 +365,66 @@ There was no legacy `prd.md` to update on Day 0. The brief is the first product 
 - [04](04-brownfield-northwind-sso.md) skipped brief/PRD because SSO was a Linear ticket. If your next change is that small, do 04, not this.
 - [01](01-greenfield-mealplan-ai.md) uses the same brief skill after brainstorm + forge. Here the concept is already sold — skip the think block.
 - Architecture **ratifies** `Shipment` / `Stop` / `Carrier` / (later) `Appointment`. The portal does not get its own source of truth.
+- **ADRs come from `bmad-architecture`**, not a separate skill. See the next section.
 - Do not run `bmad-document-project`. Do not install BMad on every repo the same week.
+
+---
+
+## How to generate ADRs
+
+There is no `bmad-adr` skill. Architecture Decision Records are the **`AD-n` blocks** inside `ARCHITECTURE-SPINE.md`. `bmad-architecture` writes them.
+
+### Run it
+
+| When | Invoke | What happens |
+|---|---|---|
+| First spine (after PRD / UX, or from the living repo) | `/bmad-architecture` — create | Coaching path by default (you pick the load-bearing calls). Fast path drafts the whole spine with `[ASSUMPTION]` tags. |
+| New requirement after a spine exists | `/bmad-architecture` — **update** | Reloads `.memlog.md`, appends new decisions, **keeps AD IDs**, adds the next `AD-n`. |
+| Pressure-test without changing it | `/bmad-architecture` — **validate** | Reviewer gate + HTML report; offer to roll findings into an update. |
+
+Brownfield: the skill **reads the real code** and marks living conventions `[ADOPTED]`. It does not invent a new stack.
+
+### What lands on disk
+
+```
+planning/
+├── ARCHITECTURE-SPINE.md         ← the ADRs (AD-1, AD-2, …) — terse, citable
+└── architecture/.memlog.md       ← why you chose them — append-only working memory
+```
+
+The skill logs each call to the memlog first (`what it binds` + `the divergence it prevents`). **Finalize distills** survivors into the spine. Rationale stays in the memlog. The spine is decisions, not essays.
+
+### Shape of one ADR (from the shipped spine template)
+
+```markdown
+### AD-3 — Portal is an API client, not a second TMS
+
+- **Binds:** shipper book-load, ETA, POD
+- **Prevents:** a second `shipments` table / a second booking service
+- **Rule:** every write goes through the existing Rails API; `Shipment` remains the source of truth
+```
+
+`[ADOPTED]` on the heading (or in the Rule) means the living system already settled it — typical on brownfield (AD-1, AD-2, AD-4, later AD-5).
+
+### Rules the team should say out loud
+
+1. **One test for what becomes an ADR:** if two teams built this independently, could they choose incompatibly? If no, put it under Deferred — do not mint an AD.
+2. **IDs never get reused or renumbered.** New requirement → next `AD-n`. Retired decision stays; do not recycle `AD-3`.
+3. **Specs and stories cite AD IDs.** Offer to attach the spine as a spec companion so Build can see `AD-3`.
+4. **Do not hand-write `docs/adr/0001-*.md` unless the org already requires Nygard files.** If you need a walkthrough for humans, say so at Finalize — the skill can emit an extra HTML/md deck. That is a rendering of the spine, not a second set of decisions.
+5. **Do not run the deprecated `bmad-create-architecture`.** It forwards here. The old architecture-decision-template is gone.
+
+### CargoLane IDs (this file)
+
+| ID | When minted | Status | Decision |
+|---|---|---|---|
+| AD-1 | First architecture run | `[ADOPTED]` | `Shipment` / `Stop` / `Carrier` are the only booking source of truth |
+| AD-2 | First architecture run | `[ADOPTED]` | `pro_number` is the customer-facing id |
+| AD-3 | First architecture run | new | Portal is Next.js on the existing API; no second booking table |
+| AD-4 | First architecture run | `[ADOPTED]` | Billing Sidekiq job is out of bounds |
+| AD-5 | After Acme appointments | `[ADOPTED]` | `Appointment` already lives in the TMS; confirm waits on a dock window |
+
+Epic 2 **updates** the spine and adds AD-5. It does not rewrite AD-1–AD-4 and does not open a second spine.
 
 ---
 
