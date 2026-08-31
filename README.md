@@ -1,6 +1,6 @@
 # BMad Method — skill decision diagrams and scenarios
 
-ASCII trees and sequence diagrams for **when to use which [BMad Method](https://docs.bmad-method.org/) skill**, plus seven end-to-end project scenarios (greenfield and brownfield).
+ASCII trees and sequence diagrams for **when to use which [BMad Method](https://docs.bmad-method.org/) skill**, plus eight end-to-end project scenarios (greenfield and brownfield).
 
 Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skills: 29 current + 20 deprecated shims.**
 
@@ -9,9 +9,10 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 | File | What it is |
 |---|---|
 | [`install-bmad-method.md`](install-bmad-method.md) | Prerequisites, installer commands, Cursor/Claude Code, verify, update |
-| [`team-enablement-plan.md`](team-enablement-plan.md) | Demo day + how the team works on brownfield (BMad not on yet) and greenfield |
+| [`30-minute-team-intro.md`](30-minute-team-intro.md) | Facilitator script: introduce BMad and enable existing vs new projects in 30 minutes |
+| [`team-enablement-plan.md`](team-enablement-plan.md) | 90-minute demo day + week-by-week brownfield/greenfield playbooks |
 | [`bmad-skill-decision-diagrams.md`](bmad-skill-decision-diagrams.md) | Master decision tree, lifecycle sequences, agent dispatch map, recommended models, deprecated-shim map, skill → input/output cheat sheet |
-| [`use-cases/README.md`](use-cases/README.md) | Index of the seven scenarios |
+| [`use-cases/README.md`](use-cases/README.md) | Index of the eight scenarios |
 
 ## Scenarios
 
@@ -24,6 +25,7 @@ Catalog source: a current BMad Method install (`skill-manifest.csv`). **49 skill
 | [05](use-cases/05-brownfield-ledgerlite-course-correction.md) | **LedgerLite** — mid-sprint Mongo → Postgres + GDPR | Brownfield + correct-course |
 | [06](use-cases/06-party-mode-atlas-health.md) | **Atlas Health** — build vs buy vs partner video visits | `bmad-party-mode` deep dive |
 | [07](use-cases/07-brownfield-mealplan-course-correct.md) | **MealPlan AI year 2** — sharing ships, then Instacart dies | Brownfield + late course-correct |
+| [08](use-cases/08-brownfield-cargolane-enable-brief.md) | **CargoLane** — enable BMad, brief a portal, then add a requirement after it ships | Brownfield + product brief |
 
 ## How to read a sequence
 

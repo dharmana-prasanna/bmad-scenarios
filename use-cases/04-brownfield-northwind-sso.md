@@ -12,7 +12,7 @@
 
 Used: `bmad-project-context`, `bmad-help`, `bmad-deep-recon` (technical + select), `bmad-spec`, `bmad-architecture` (ratify, don't redesign), `bmad-review`, `bmad-build`, `bmad-code-review`, `bmad-checkpoint-preview`, `bmad-qa-generate-e2e-tests`, `bmad-retrospective`, `bmad-customize`.
 
-Skipped: brainstorm, forge, brief, PRFAQ, PRD, UX (login already has a design system), create-epics-and-stories, sprint-planning (team already tracks in Linear), party-mode, build-auto (auth is high-risk), correct-course.
+Skipped: brainstorm, forge, brief, PRFAQ, PRD, UX (login already has a design system), create-epics-and-stories, sprint-planning (team already tracks in Linear), party-mode, build-auto (auth is high-risk), correct-course. If the next change is a **new offering** that needs a written vision, use [08 CargoLane](08-brownfield-cargolane-enable-brief.md) instead (enable + `bmad-product-brief`).
 
 Deprecated names someone on the team might still type: `bmad-document-project`, `bmad-generate-project-context` → both forward here.
 

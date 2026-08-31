@@ -9,6 +9,8 @@ A plan you can run with your team using **this repo as the teaching kit**. It co
 
 You do not “BMad the whole legacy system.” You install it, teach agents the house rules, and use it on the **next** change.
 
+**Only have 30 minutes?** Run [`30-minute-team-intro.md`](30-minute-team-intro.md) instead of the 90-minute demo below. Come back here for the week-by-week playbooks.
+
 ---
 
 ## What “done” looks like
@@ -212,6 +214,8 @@ Pick the next **real** ticket.
 | Clear, one session | `bmad-build` only |
 | Several sessions, one outcome | `bmad-spec` (ticket + whatever docs you already have) → Build per story |
 | Needs a signed-off “what” because two teams will build | `bmad-prd` **update** only if a PRD already exists; else a short spec + a one-pager in your existing tool |
+| New offering / new customer surface, concept is solid | `bmad-product-brief` for **that** surface (not a fake product history), then PRD create — [08](use-cases/08-brownfield-cargolane-enable-brief.md) |
+| New requirement **after** the first BMad change shipped | Same brief + `bmad-prd` **update** + new spec folder; do not reopen ACCEPTed work; do not `correct-course` unless the plan died — [08](use-cases/08-brownfield-cargolane-enable-brief.md) Act 2 |
 
 Walk [use-case 04](use-cases/04-brownfield-northwind-sso.md) as the script: recon/select if you must choose a vendor → **ratify** architecture → spec → build → CR on another model → record any agent mistake in `AGENTS.md`.
 
@@ -340,6 +344,7 @@ If a greenfield starts in the same month, run its Day 0 in week 2 so the steward
 | 2 | Tiny build | diagrams §4 | Yes |
 | 3 | Greenfield full path | [01](use-cases/01-greenfield-mealplan-ai.md) | Walk paper |
 | 4 | Brownfield day 0 + SSO | [04](use-cases/04-brownfield-northwind-sso.md) | Walk paper |
+| 4b | Enable + brief + later requirement | [08](use-cases/08-brownfield-cargolane-enable-brief.md) | Walk paper if the next bet is a new surface, then a new ask after it ships |
 | 5 | Late course-correct | [07](use-cases/07-brownfield-mealplan-course-correct.md) | Walk paper |
 | 6 | Walk-in-at-the-bomb | [05](use-cases/05-brownfield-ledgerlite-course-correction.md) | Only if asked |
 | 7 | Party / option D | [06](use-cases/06-party-mode-atlas-health.md) | Live if you have a fight |
