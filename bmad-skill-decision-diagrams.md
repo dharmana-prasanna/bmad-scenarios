@@ -93,7 +93,8 @@ PLAN
   bmad-prd
       << in:  create:   brief and/or PRFAQ and/or brain dump + recon
               update:   existing prd.md + a change signal
-              validate: finished prd.md + checklist
+              validate: finished prd.md + the skill's shipped rubric
+                        (assets/prd-validation-checklist.md; org can override)
       >> out: create/update: prd.md, addendum.md, .memlog.md
               validate: HTML + .md findings
 
@@ -613,7 +614,7 @@ This is the long path. Planning tools are independent — skip any box you do no
       |                                  bmad-prd             |            |                |
       |                                  create:  << in:  brief.md and/or prfaq + recon     |
       |                                  update:  << in:  prd.md + change signal            |
-      |                                  validate:<< in:  finished prd.md + checklist       |
+      |                                  validate:<< in:  finished prd.md + shipped rubric  |
       |                                  >> out: prd.md, addendum.md, .memlog.md            |
       |                                  >> out: validate HTML + .md findings               |
       |              |                    |                |               |                |

@@ -74,7 +74,7 @@ YOU          SKILL / ROOM
  |                      << in:  planning/prd.md
  |                      >> out: review/prd-findings.json + .md
  |                 bmad-prd   intent=validate
- |                      << in:  finished prd.md + checklist
+ |                      << in:  finished prd.md + shipped rubric (not a user file)
  |                      >> out: planning/prd-validation.html + .md
  |
  |== HOW, THEN WHAT =====================================
